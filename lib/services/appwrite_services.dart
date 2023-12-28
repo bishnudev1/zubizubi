@@ -1,10 +1,12 @@
 import 'dart:developer';
 
 import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart';
 import 'package:stacked/stacked.dart';
 
 class AppwriteServices with ListenableServiceMixin {
   Client? _client;
+   String? lastId;
 
   Future<void> init() async {
     _client = Client()
@@ -18,6 +20,45 @@ class AppwriteServices with ListenableServiceMixin {
     }
     else{
       log("Appwrite Client Initialization Failed");
+    }
+  }
+
+  Future<List<Document>> getVideos() async { 
+    if (_client == null) {
+      log("Appwrite client got null");
+      null;
+    }
+    final databases = Databases(_client!);
+
+    try {
+      final documents = await databases.listDocuments(
+        databaseId: '6568dc6b9ef7c77e75ed',
+        collectionId: '6568dd12d96929d3e895',
+        queries: [
+          Query.limit(1000),
+          Query.orderDesc("created"),
+          if (lastId != null) Query.cursorAfter(lastId!),
+        ],
+      );
+
+      log("Appwrite documents: $documents");
+
+      final data = documents.documents;
+
+      log("Appwrite video data length: ${data.length}");
+
+      if (data.isNotEmpty) {
+        lastId = data.last.$id;
+      } else {
+        lastId = null;
+      }
+
+      data.shuffle();
+
+      return data;
+    } on AppwriteException catch (e) {
+      log("AppwriteException: $e");
+      return [];
     }
   }
 }

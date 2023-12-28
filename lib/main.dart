@@ -5,6 +5,7 @@ import 'package:url_strategy/url_strategy.dart';
 import 'package:zubizubi/app/app.locator.dart';
 import 'package:zubizubi/app/routes.dart';
 import 'package:zubizubi/services/appwrite_services.dart';
+import 'package:zubizubi/services/auth_services.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,6 +13,7 @@ Future<void> main() async {
   setupLocator();
   locator<AppwriteServices>();
   await locator<AppwriteServices>().init();
+  locator<AuthServices>();
   runApp(const MyApp());
 }
 

@@ -3,6 +3,9 @@ class User{
   String? name;
   String? email;
   String? password;
+  int? likes;
+  int? shares;
+  String? createdAt;
   // String? phone;
   // String? address;
   // String? role;
@@ -13,6 +16,9 @@ class User{
     this.name,
     this.email,
     this.password,
+    this.likes,
+    this.shares,
+    this.createdAt,
     // this.phone,
     // this.address,
     // this.role,
@@ -25,6 +31,9 @@ class User{
       name: json['name'],
       email: json['email'],
       password: json['password'],
+      likes: json['likes'],
+      shares: json['shares'],
+      createdAt: json['createdAt'],
       // phone: json['phone'],
       // address: json['address'],
       // role: json['role'],
@@ -38,6 +47,9 @@ class User{
       'name': name,
       'email': email,
       'password': password,
+      'likes': likes,
+      'shares': shares,
+      'createdAt': createdAt,
       // 'phone': phone,
       // 'address': address,
       // 'role': role,
