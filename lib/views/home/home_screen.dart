@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:stacked/stacked.dart';
 import 'package:zubizubi/views/home/home_viewmodel.dart';
 
@@ -16,9 +17,12 @@ class HomeScreen extends StatelessWidget {
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 // viewModel.share();
-                viewModel.loginWithFacebook();
+                viewModel.loginWithGoogle();
               },
-              child: Icon(Icons.facebook),
+              child: FaIcon(
+                FontAwesomeIcons.google,
+                color: Colors.white,
+              ),
             ));
       },
     );
