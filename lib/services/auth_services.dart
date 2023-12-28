@@ -69,6 +69,7 @@ class AuthServices with ListenableServiceMixin {
       log(e.toString());
     }finally{
       // _navigationService.replaceWith('/home');
+      
     }
   }
 

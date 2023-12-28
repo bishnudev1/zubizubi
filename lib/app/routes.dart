@@ -1,11 +1,12 @@
 import 'dart:developer';
-
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:zubizubi/views/home/home_screen.dart';
 import 'package:zubizubi/views/login/login_screen.dart';
 import 'package:zubizubi/views/splash/splash_screen.dart';
 
+
+final GlobalKey navigatorKey = GlobalKey();
 
 final routerDelegate = BeamerDelegate(
   locationBuilder: RoutesLocationBuilder(
