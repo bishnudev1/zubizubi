@@ -10,4 +10,8 @@ class HomeViewModel extends BaseViewModel{
   loginWithFacebook() async {
     await _authServices.handleFacebookLogin();
   }
+
+  loginWithGoogle() async {
+    await _authServices.handleGoogleLogin();
+  }
 }
