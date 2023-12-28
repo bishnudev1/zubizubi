@@ -43,14 +43,14 @@ dependencies:
   fluttertoast: ^8.2.4
   google_fonts: ^6.1.0
   intl: ^0.19.0
-  google_sign_in: ^6.1.6
+  # google_sign_in: ^6.1.6
   flutter_launcher_icons: ^0.13.1
   video_player: ^2.8.1
   share_plus: ^7.2.1
   beamer: ^1.5.6
   appwrite: ^11.0.1
   url_strategy: ^0.2.0
-  flutter_facebook_auth: ^6.0.3
+  # flutter_facebook_auth: ^6.0.3
 
 dev_dependencies:
   flutter_test:
