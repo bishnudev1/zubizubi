@@ -17,7 +17,6 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -29,10 +28,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.system,
       theme: ThemeData(
-        colorSchemeSeed: Colors.limeAccent
+        colorSchemeSeed: Colors.pinkAccent,
       ),
-       routeInformationParser: BeamerParser(),
-       routerDelegate : routerDelegate,
+      routeInformationParser: BeamerParser(),
+      routerDelegate: routerDelegate,
       scrollBehavior: const MaterialScrollBehavior().copyWith(
         dragDevices: {
           PointerDeviceKind.mouse,
