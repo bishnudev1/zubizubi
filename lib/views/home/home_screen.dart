@@ -26,7 +26,11 @@ class HomeScreen extends StatelessWidget {
           log("shareUrl: $shareUrl");
           await viewModel.parseShareUrl(shareUrl!);
         }
-        await viewModel.init();
+        // await viewModel.init();
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          viewModel.getUser();
+        });
       },
       builder: (context, viewModel, child) {
         if (viewModel.isBusy) {
@@ -44,17 +48,23 @@ class HomeScreen extends StatelessWidget {
           );
         }
         return SafeArea(
-            child: Scaffold(
-          backgroundColor: Colors.black,
-          // body: SizedBox.expand(child: feedVideos(viewModel)),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              viewModel.loginWithFacebook();
-            },
-            child: const FaIcon(FontAwesomeIcons.facebook),
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            // body: SizedBox.expand(child: feedVideos(viewModel)),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text("Welcome ${viewModel.user?.name ?? ""}"),
+                  Text("Email: ${viewModel.user?.email ?? ""}"),
+                  ElevatedButton(
+                      onPressed: () => viewModel.logoutAccount(),
+                      child: const Text("Logout")),
+                ],
+              ),
+            ),
           ),
-        ),
-        
         );
       },
     );

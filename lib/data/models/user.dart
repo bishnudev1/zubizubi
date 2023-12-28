@@ -2,6 +2,7 @@ class User{
   String ?id;
   String? name;
   String? email;
+  String? photoUrl;
   String? password;
   int? likes;
   int? shares;
@@ -19,6 +20,7 @@ class User{
     this.likes,
     this.shares,
     this.createdAt,
+    this.photoUrl
     // this.phone,
     // this.address,
     // this.role,
@@ -34,6 +36,7 @@ class User{
       likes: json['likes'],
       shares: json['shares'],
       createdAt: json['createdAt'],
+      photoUrl: json['photo'],
       // phone: json['phone'],
       // address: json['address'],
       // role: json['role'],
@@ -50,6 +53,7 @@ class User{
       'likes': likes,
       'shares': shares,
       'createdAt': createdAt,
+      'photo': photoUrl,
       // 'phone': phone,
       // 'address': address,
       // 'role': role,

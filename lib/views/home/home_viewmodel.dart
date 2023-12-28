@@ -1,24 +1,39 @@
-
-
 import 'dart:developer';
-
+import 'package:appwrite/models.dart' as UserModel;
 import 'package:stacked/stacked.dart';
 import 'package:zubizubi/app/app.locator.dart';
+import 'package:zubizubi/data/models/user.dart';
 import '../../data/models/video.dart';
 import '../../services/auth_services.dart';
 import '../../services/video_services.dart';
 
-class HomeViewModel extends BaseViewModel{
+class HomeViewModel extends BaseViewModel {
   final _authServices = locator<AuthServices>();
+  User? _user;
 
-  loginWithFacebook() async {
-    await _authServices.handleFacebookLogin();
+  User? get user => _user;
+
+
+  getUser()async{
+    UserModel.User user = await _authServices.getCurrentUser();
+    _user = User(
+      id: user.$id,
+      name: user.name,
+      email: user.email,
+      photoUrl: "",
+      likes: 0,
+      shares: 0,
+      // photoUrl: user.photoUrl,
+      createdAt: user.registration,
+    );
+    notifyListeners();
   }
 
-  loginWithGoogle() async {
-    await _authServices.handleGoogleLogin();
+  logoutAccount()async{
+    await _authServices.logoutUser();
   }
-    List<Video>? videoList;
+
+  List<Video>? videoList;
 
   final _videoServices = locator<VideoServices>();
 
@@ -27,7 +42,7 @@ class HomeViewModel extends BaseViewModel{
 
   bool loading = false;
 
-  init() async{
+  init() async {
     await loadFetchNextBatchOfVideos();
     // var initialVideoList = _videoServices
     //     .demoVideoUrls()
@@ -53,7 +68,6 @@ class HomeViewModel extends BaseViewModel{
   changeVideo(index) async {
     if (videoList![prevVideo].controller != null) {
       videoList![prevVideo].controller!.pause();
-
 
       if (videoList![prevVideo].controller!.value.isInitialized) {
         videoList![prevVideo].controller!.seekTo(Duration.zero);
