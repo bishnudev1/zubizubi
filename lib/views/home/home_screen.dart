@@ -6,8 +6,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:share_plus/share_plus.dart';
 import 'package:stacked/stacked.dart';
 import 'package:video_player/video_player.dart';
+import 'package:zubizubi/utils/bottom_bar.dart';
 
 import '../../data/models/video.dart';
+import '../../utils/appbar/appbar.dart';
 import 'home_viewmodel.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -26,11 +28,11 @@ class HomeScreen extends StatelessWidget {
           log("shareUrl: $shareUrl");
           await viewModel.parseShareUrl(shareUrl!);
         }
-        // await viewModel.init();
+        await viewModel.init();
 
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          viewModel.getUser();
-        });
+        // WidgetsBinding.instance.addPostFrameCallback((_) {
+        //   viewModel.getUser();
+        // });
       },
       builder: (context, viewModel, child) {
         if (viewModel.isBusy) {
@@ -50,20 +52,10 @@ class HomeScreen extends StatelessWidget {
         return SafeArea(
           child: Scaffold(
             backgroundColor: Colors.white,
-            // body: SizedBox.expand(child: feedVideos(viewModel)),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text("Welcome ${viewModel.user?.name ?? ""}"),
-                  Text("Email: ${viewModel.user?.email ?? ""}"),
-                  ElevatedButton(
-                      onPressed: () => viewModel.logoutAccount(),
-                      child: const Text("Logout")),
-                ],
-              ),
-            ),
+            // appBar: PreferredSize(
+            //     preferredSize: Size.fromHeight(50), child: CustomAppBar()),
+            body: SizedBox.expand(child: feedVideos(viewModel)),
+            bottomNavigationBar: bottomNavigationBar(context),
           ),
         );
       },
@@ -125,16 +117,115 @@ Widget videoCard(Video video, BuildContext context) {
             ),
       Positioned(
         right: 15,
-        bottom: 15,
-        child: IconButton(
-          onPressed: () {
-            // Share.share("https://j-aan.com/admin/share?url=${video.url}", subject: 'Check out this video!');
-          },
-          icon: const FaIcon(
-            FontAwesomeIcons.share,
-            color: Colors.white,
-            size: 30,
-          ),
+        bottom: 10,
+        child: CircleAvatar(
+          radius: 20,
+          backgroundImage: NetworkImage(
+              "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"),
+        ),
+      ),
+      Positioned(
+        right: 15,
+        bottom: 65,
+        child: Column(
+          children: [
+            IconButton(
+              onPressed: () {
+                // Share.share("https://j-aan.com/admin/share?url=${video.url}", subject: 'Check out this video!');
+              },
+              icon: const FaIcon(
+                FontAwesomeIcons.download,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
+            Text(
+              "Save",
+              style: TextStyle(
+                  fontFamily: "Canela",
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+      ),
+      Positioned(
+        right: 15,
+        bottom: 140,
+        child: Column(
+          children: [
+            IconButton(
+              onPressed: () {
+                // Share.share("https://j-aan.com/admin/share?url=${video.url}", subject: 'Check out this video!');
+              },
+              icon: const FaIcon(
+                FontAwesomeIcons.share,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
+            Text(
+              "Share",
+              style: TextStyle(
+                  fontFamily: "Canela",
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+      ),
+      Positioned(
+        right: 15,
+        bottom: 200,
+        child: Column(
+          children: [
+            IconButton(
+              onPressed: () {
+                // Share.share("https://j-aan.com/admin/share?url=${video.url}", subject: 'Check out this video!');
+              },
+              icon: const FaIcon(
+                FontAwesomeIcons.heart,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
+            Text(
+              "${0}",
+              style: TextStyle(
+                  fontFamily: "Canela",
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+      ),
+      Positioned(
+        right: 15,
+        bottom: 270,
+        child: Column(
+          children: [
+            IconButton(
+              onPressed: () {
+                // Share.share("https://j-aan.com/admin/share?url=${video.url}", subject: 'Check out this video!');
+              },
+              icon: const FaIcon(
+                FontAwesomeIcons.comment,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
+            Text(
+              "${0}",
+              style: TextStyle(
+                  fontFamily: "Canela",
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600),
+            ),
+          ],
         ),
       ),
     ],

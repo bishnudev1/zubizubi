@@ -14,7 +14,7 @@ class SplashScreen extends StatelessWidget {
       },
       builder: (context, viewModel, child) {
         return Scaffold(
-          body: Center(child: Image.asset("assets/images/icon.png")),
+          body: Center(child: Image.asset("assets/images/icon.jpeg", height: 100, width: 100,)),
         );
       },
     );
