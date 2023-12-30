@@ -24,12 +24,12 @@ class SplashViewModel extends ReactiveViewModel {
       Future.delayed(const Duration(seconds: 3), () {
         // router.go(Routes.homeScreen.path);
 
-        log("Current User: ${currentUser}");
+        log("Current User: $currentUser");
 
         if (currentUser == null) {
           Beamer.of(context).beamToNamed('/login');
         } else {
-          Beamer.of(context).beamToNamed('/home');
+          Beamer.of(context).beamToNamed('/shell');
         }
       });
     }

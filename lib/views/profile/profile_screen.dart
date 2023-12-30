@@ -38,17 +38,15 @@ class ProfileScreen extends StatelessWidget {
           );
         }
         return Scaffold(
-          appBar: PreferredSize(
-              preferredSize: Size.fromHeight(50), child: CustomAppBar()),
+          appBar: PreferredSize(preferredSize: Size.fromHeight(50), child: CustomAppBar()),
           body: SafeArea(
               child: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             alignment: Alignment.center,
             // padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(Images.appBg), fit: BoxFit.cover)),
+            decoration:
+                BoxDecoration(image: DecorationImage(image: AssetImage(Images.appBg), fit: BoxFit.cover)),
             child: Column(
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -65,9 +63,8 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 60,
-                        backgroundImage: NetworkImage(
-                            viewModel.user?.photoUrl ??
-                                "https://picsum.photos/200"),
+                        backgroundImage:
+                            NetworkImage(viewModel.user?.photoUrl ?? "https://picsum.photos/200"),
                       ),
                       Row(
                         children: [
@@ -130,16 +127,14 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       Text(
                         "Followers: ${viewModel.user?.followers ?? 0}",
-                        style:
-                            GoogleFonts.lato(fontSize: 16, color: Colors.white),
+                        style: GoogleFonts.lato(fontSize: 16, color: Colors.white),
                       ),
                       SizedBox(
                         width: 15,
                       ),
                       Text(
                         "Shares: ${viewModel.user?.shares ?? 0}",
-                        style:
-                            GoogleFonts.lato(fontSize: 16, color: Colors.white),
+                        style: GoogleFonts.lato(fontSize: 16, color: Colors.white),
                       ),
                     ],
                   ),
@@ -170,8 +165,7 @@ class ProfileScreen extends StatelessWidget {
                                   )
                                 : Text(
                                     "Update Picture",
-                                    style: GoogleFonts.lato(
-                                        fontSize: 14, color: Colors.white),
+                                    style: GoogleFonts.lato(fontSize: 14, color: Colors.white),
                                   ),
                           ),
                         ),
@@ -193,8 +187,7 @@ class ProfileScreen extends StatelessWidget {
                                 color: Colors.transparent),
                             child: Text(
                               "Logout Profile",
-                              style: GoogleFonts.lato(
-                                  fontSize: 14, color: Colors.white),
+                              style: GoogleFonts.lato(fontSize: 14, color: Colors.white),
                             ),
                           ),
                         ),
@@ -216,21 +209,18 @@ class ProfileScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return InkWell(
                         onTap: () {
-                          Beamer.of(context).beamToNamed('/home', data: {
-                            'shareUrl': viewModel.userVideos[index].videoUrl
-                          });
+                          Beamer.of(context)
+                              .beamToNamed('/home', data: {'shareUrl': viewModel.userVideos[index].videoUrl});
                         },
                         child: Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
                               // borderRadius: BorderRadius.circular(10)
                             ),
-                            width: MediaQuery.of(context).size.width *
-                                0.3, // Adjust as needed
+                            width: MediaQuery.of(context).size.width * 0.3, // Adjust as needed
                             height: 700, // Adjust as needed
                             child: Center(
-                              child:
-                                  Text("${viewModel.userVideos[index].name}}"),
+                              child: Text("${viewModel.userVideos[index].name}}"),
                             )),
                       );
                     },
@@ -239,7 +229,6 @@ class ProfileScreen extends StatelessWidget {
               ],
             ),
           )),
-          bottomNavigationBar: bottomNavigationBar(context),
         );
       },
     );
