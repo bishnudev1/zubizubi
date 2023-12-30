@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:zubizubi/app/app.locator.dart';
+import 'package:zubizubi/app/routes.dart';
 import 'package:zubizubi/data/models/user.dart';
 import 'package:zubizubi/utils/toast.dart';
 
@@ -35,6 +36,8 @@ class AuthServices with ListenableServiceMixin {
     } on AppwriteException catch (e) {
       showToast(e.message.toString());
       log('AppwriteException: $e');
+    }finally {
+    routerDelegate.beamToNamed('/shell');
     }
 //     final LoginResult result = await FacebookAuth.instance
 //         .login(); // by default we request the email and the public profile
@@ -108,7 +111,7 @@ class AuthServices with ListenableServiceMixin {
     } catch (e) {
       log(e.toString());
     } finally {
-      Beamer.of(context).beamToNamed('/home');
+      routerDelegate.beamToNamed('/shell');
     }
   }
 

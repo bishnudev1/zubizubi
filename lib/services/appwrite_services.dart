@@ -40,7 +40,7 @@ class AppwriteServices with ListenableServiceMixin {
         collectionId: '658ebf9654ca69759383',
         queries: [
           Query.limit(1000),
-          // Query.orderDesc("created"),
+          Query.orderDesc("created"),
           if (lastId != null) Query.cursorAfter(lastId!),
         ],
       );
@@ -173,7 +173,7 @@ class AppwriteServices with ListenableServiceMixin {
     final storage = Storage(_client!);
 
     try {
-      await storage.getFilePreview(bucketId: "658ec05b5ecf34a1cea7", fileId: documentId);
+      await storage.getFileDownload(bucketId: "658ec05b5ecf34a1cea7", fileId: documentId);
     } on PlatformException catch (e) {
       showToast(e.message.toString());
       log('PlatformException: $e');

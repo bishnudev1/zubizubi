@@ -15,14 +15,14 @@ final routerDelegate = BeamerDelegate(
       '/': (context, state, data) => const SplashScreen(),
       '/shell': (context, state, data) => ShellScreen(),
       '/login': (context, state, data) => const LoginScreen(),
-      //   '/profile': (context, state, data) => const ProfileScreen(),
-      //   '/search': (context, state, data) => const SearchScreen(),
+        // '/profile': (context, state, data) => const ProfileScreen(),
+        // '/search': (context, state, data) => const SearchScreen(),
       '/share': (context, state, data) {
         log("state.uri: ${state.uri}");
         // Use BeamPage to define custom behavior
         return BeamPage(
           key: const ValueKey('share'),
-          //   popToNamed: '/',
+            popToNamed: '/shell',
           type: BeamPageType.scaleTransition,
           child: HomeScreen(key: UniqueKey(), shareUrl: state.uri.queryParameters['url']),
         );

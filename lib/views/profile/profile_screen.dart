@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stacked/stacked.dart';
+import 'package:zubizubi/app/routes.dart';
 import 'package:zubizubi/themes/images.dart';
 import 'package:zubizubi/utils/appbar/appbar.dart';
 import 'package:zubizubi/views/profile/profile_viewmodel.dart';
@@ -209,8 +210,9 @@ class ProfileScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return InkWell(
                         onTap: () {
-                          Beamer.of(context)
-                              .beamToNamed('/home', data: {'shareUrl': viewModel.userVideos[index].videoUrl});
+                          // Beamer.of(context)
+                          //     .beamToNamed('/share', data: {'shareUrl': viewModel.userVideos[index].videoUrl});
+                          routerDelegate.beamToNamed('/share?url=${viewModel.userVideos[index].videoUrl}',);
                         },
                         child: Container(
                             decoration: BoxDecoration(
