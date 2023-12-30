@@ -112,6 +112,7 @@ class HomeViewModel extends BaseViewModel {
                   created: e['created'],
                   creator: e['creator'],
                   creatorName: e['creatorName'],
+                  videoInfo: e['videoInfo'],
                   creatorUrl: e['creatorUrl']))
           .toList();
       videoList.addAll(allNewVideos.cast<Video>());
@@ -150,6 +151,7 @@ class HomeViewModel extends BaseViewModel {
         videoUrl: url,
         created: (DateTime.now().millisecondsSinceEpoch).toString(),
         creatorName: "Zubi-Zubi",
+        videoInfo: {},
         creatorUrl: ""));
     loadVideo(0);
     notifyListeners();

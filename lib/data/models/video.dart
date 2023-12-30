@@ -12,6 +12,7 @@ class Video {
   String creatorName;
   String created;
   String creatorUrl;
+  Map videoInfo;
 
   VideoPlayerController? controller;
 
@@ -26,6 +27,7 @@ class Video {
     required this.creator,
     required this.creatorUrl,
     required this.creatorName,
+    required this.videoInfo,
   });
 
   Video.fromJson(Map<dynamic, dynamic> json)
@@ -38,6 +40,7 @@ class Video {
         creator = json['creator'],
         created = json['created'],
         creatorName = json['creatorName'],
+        videoInfo = json['videoInfo'].toMap(),
         creatorUrl = json['creatorUrl'];
 
   Map<String, dynamic> toJson() {
@@ -52,6 +55,7 @@ class Video {
     data['creator'] = creator;
     data['creatorUrl'] = creatorUrl;
     data['creatorName'] = creatorName;
+    data['videoInfo'] = videoInfo;
     return data;
   }
 
@@ -82,6 +86,7 @@ class Video {
       created: map["created"],
       creatorUrl: map['creatorUrl'],
       creatorName: map['creatorName'],
+      videoInfo: map['videoInfo'].toMap(),
     );
   }
 }
