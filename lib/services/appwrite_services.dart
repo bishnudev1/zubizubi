@@ -109,6 +109,7 @@ class AppwriteServices with ListenableServiceMixin {
           "videoUrl": videoUrl,
           "created": (DateTime.now().millisecondsSinceEpoch).toString(),
           "creatorUrl": getauthor['photoUrl'],
+          "creatorName": getauthor['name'],
         },
       );
 
