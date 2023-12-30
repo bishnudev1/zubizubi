@@ -35,26 +35,21 @@ class SearchScreen extends StatelessWidget {
           );
         }
         return Scaffold(
-          appBar: PreferredSize(
-              preferredSize: Size.fromHeight(50), child: CustomAppBar()),
+          appBar: PreferredSize(preferredSize: Size.fromHeight(50), child: CustomAppBar()),
           body: SafeArea(
               child: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             alignment: Alignment.center,
             // padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(Images.appBg), fit: BoxFit.cover)),
+            decoration:
+                BoxDecoration(image: DecorationImage(image: AssetImage(Images.appBg), fit: BoxFit.cover)),
             child: Column(
               children: [
                 Container(
                   height: 50,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10)),
+                  margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: TextFormField(
                     controller: viewModel.searchController,
@@ -78,8 +73,7 @@ class SearchScreen extends StatelessWidget {
                     itemCount: viewModel.searchList.length,
                     itemBuilder: (context, index) {
                       return Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
+                        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         child: Row(
                           children: [
                             Container(
@@ -87,8 +81,7 @@ class SearchScreen extends StatelessWidget {
                               width: 50,
                               decoration: BoxDecoration(
                                   image: DecorationImage(
-                                      image: NetworkImage(viewModel
-                                          .searchList[index].photoUrl!),
+                                      image: NetworkImage(viewModel.searchList[index].photoUrl!),
                                       fit: BoxFit.cover),
                                   color: Colors.grey[200],
                                   borderRadius: BorderRadius.circular(10)),
@@ -103,8 +96,7 @@ class SearchScreen extends StatelessWidget {
                                   height: 10,
                                   width: 100,
                                   decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(10)),
+                                      color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
                                 ),
                                 const SizedBox(
                                   height: 5,
@@ -113,8 +105,7 @@ class SearchScreen extends StatelessWidget {
                                   height: 10,
                                   width: 100,
                                   decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(10)),
+                                      color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
                                 ),
                               ],
                             )
@@ -127,7 +118,6 @@ class SearchScreen extends StatelessWidget {
               ],
             ),
           )),
-          bottomNavigationBar: bottomNavigationBar(context),
         );
       },
     );

@@ -6,6 +6,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stacked/stacked.dart';
+import 'package:zubizubi/app/routes.dart';
 import 'package:zubizubi/utils/toast.dart';
 
 class AppwriteServices with ListenableServiceMixin {
@@ -65,7 +66,7 @@ class AppwriteServices with ListenableServiceMixin {
     }
   }
 
-  addNewVideo(BuildContext context, String email, IO.File file) async {
+  addNewVideo(String email, IO.File file) async {
     if (_client == null) {
       log("Appwrite client got null");
       null;
@@ -81,7 +82,7 @@ class AppwriteServices with ListenableServiceMixin {
       );
 
       final videoUrl =
-          "https://appwrite.bishnudevs.in/v1/storage/buckets/658ec05b5ecf34a1cea7/files/${videoId}/view?project=658bf6d7d729c67607f5";
+          "https://appwrite.bishnudevs.in/v1/storage/buckets/658ec05b5ecf34a1cea7/files/$videoId/view?project=658bf6d7d729c67607f5";
 
       String fileName = IO.File(file.path).uri.pathSegments.last;
 
@@ -115,7 +116,7 @@ class AppwriteServices with ListenableServiceMixin {
 
       notifyListeners();
       showToast("Video Uploaded Successfully");
-      Beamer.of(context).beamToNamed('/home');
+      routerDelegate.beamToNamed('/shell');
     } on PlatformException catch (e) {
       showToast(e.message.toString());
       log('PlatformException: $e');
@@ -172,8 +173,7 @@ class AppwriteServices with ListenableServiceMixin {
     final storage = Storage(_client!);
 
     try {
-      await storage.getFilePreview(
-          bucketId: "658ec05b5ecf34a1cea7", fileId: documentId);
+      await storage.getFilePreview(bucketId: "658ec05b5ecf34a1cea7", fileId: documentId);
     } on PlatformException catch (e) {
       showToast(e.message.toString());
       log('PlatformException: $e');
@@ -184,6 +184,4 @@ class AppwriteServices with ListenableServiceMixin {
       log(e.toString());
     }
   }
-
-
 }

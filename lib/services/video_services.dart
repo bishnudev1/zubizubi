@@ -18,10 +18,10 @@ class VideoServices with ListenableServiceMixin {
     try {
       final user = await _authServices.getCurrentUser();
       final email = user['email'];
-      await _appwriteServices.addNewVideo(context, email, image);
+      if (context.mounted) {
+        await _appwriteServices.addNewVideo(email, image);
+      }
       notifyListeners();
-      fetchUserVideos(email);
-      fetchVideosInBatches();
     } on PlatformException catch (e) {
       showToast(e.message.toString());
       log('PlatformException: $e');
@@ -72,7 +72,7 @@ class VideoServices with ListenableServiceMixin {
     }
   }
 
-  downloadVideo(String documentId)async{
+  downloadVideo(String documentId) async {
     try {
       await _appwriteServices.saveVideo(documentId);
       notifyListeners();

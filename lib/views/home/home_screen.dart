@@ -10,14 +10,45 @@ import 'package:share_plus/share_plus.dart';
 import 'package:stacked/stacked.dart';
 import 'package:video_player/video_player.dart';
 import 'package:zubizubi/utils/bottom_bar.dart';
+import 'package:zubizubi/views/profile/profile_screen.dart';
 
+import '../../app/routes.dart';
 import '../../data/models/video.dart';
 import '../../utils/appbar/appbar.dart';
 import 'home_viewmodel.dart';
 
+class ShellScreen extends StatelessWidget {
+  ShellScreen({Key? key}) : super(key: key);
+
+  final _beamerKey = GlobalKey<BeamerState>();
+  final _routerDelegate = BeamerDelegate(
+    initialPath: '/home',
+    locationBuilder: BeamerLocationBuilder(
+      beamLocations: [
+        HomeLocation(),
+        ProfileLocation(),
+        SearchLocation(),
+      ],
+    ),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Beamer(
+        key: _beamerKey,
+        routerDelegate: _routerDelegate,
+      ),
+      bottomNavigationBar: ShellBottomNavigationBar(
+        beamerKey: _beamerKey,
+      ),
+    );
+  }
+}
+
 class HomeScreen extends StatelessWidget {
   final String? shareUrl;
-  const HomeScreen({Key? key, this.shareUrl}) : super(key: key);
+  const HomeScreen({super.key, this.shareUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +89,6 @@ class HomeScreen extends StatelessWidget {
             // appBar: PreferredSize(
             //     preferredSize: Size.fromHeight(50), child: CustomAppBar()),
             body: SizedBox.expand(child: feedVideos(viewModel)),
-            bottomNavigationBar: bottomNavigationBar(context),
           ),
         );
       },
@@ -72,15 +102,15 @@ Widget feedVideos(HomeViewModel viewModel) {
       initialPage: 0,
       viewportFraction: 1,
     ),
-    itemCount: viewModel.videoList!.length,
+    itemCount: viewModel.videoList.length,
     onPageChanged: (index) {
-      index = index % (viewModel.videoList!.length);
+      index = index % (viewModel.videoList.length);
       viewModel.changeVideo(index);
     },
     scrollDirection: Axis.vertical,
     itemBuilder: (context, index) {
-      index = index % (viewModel.videoList!.length);
-      return videoCard(viewModel.videoList![index], viewModel, context);
+      index = index % (viewModel.videoList.length);
+      return videoCard(viewModel.videoList[index], viewModel, context);
     },
   );
 }
@@ -147,13 +177,10 @@ Widget videoCard(Video video, HomeViewModel viewmodel, BuildContext context) {
                 size: 30,
               ),
             ),
-            Text(
+            const Text(
               "Save",
               style: TextStyle(
-                  fontFamily: "Canela",
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600),
+                  fontFamily: "Canela", fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -165,8 +192,7 @@ Widget videoCard(Video video, HomeViewModel viewmodel, BuildContext context) {
           children: [
             IconButton(
               onPressed: () {
-                Share.share("${video.videoUrl}",
-                    subject: 'Check out this video!');
+                Share.share(video.videoUrl, subject: 'Check out this video!');
               },
               icon: const FaIcon(
                 FontAwesomeIcons.share,
@@ -174,13 +200,10 @@ Widget videoCard(Video video, HomeViewModel viewmodel, BuildContext context) {
                 size: 30,
               ),
             ),
-            Text(
+            const Text(
               "Share",
               style: TextStyle(
-                  fontFamily: "Canela",
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600),
+                  fontFamily: "Canela", fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -202,11 +225,8 @@ Widget videoCard(Video video, HomeViewModel viewmodel, BuildContext context) {
             ),
             Text(
               "${video.likes}",
-              style: TextStyle(
-                  fontFamily: "Canela",
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600),
+              style: const TextStyle(
+                  fontFamily: "Canela", fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -226,13 +246,10 @@ Widget videoCard(Video video, HomeViewModel viewmodel, BuildContext context) {
                 size: 30,
               ),
             ),
-            Text(
+            const Text(
               "${0}",
               style: TextStyle(
-                  fontFamily: "Canela",
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600),
+                  fontFamily: "Canela", fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -242,8 +259,7 @@ Widget videoCard(Video video, HomeViewModel viewmodel, BuildContext context) {
         bottom: 70,
         child: Text(
           video.creatorName,
-          style: GoogleFonts.zillaSlab(
-              fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
+          style: GoogleFonts.zillaSlab(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
         ),
       ),
       Positioned(
