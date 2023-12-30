@@ -1,8 +1,11 @@
 import 'dart:developer';
 
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
 // import 'package:share_plus/share_plus.dart';
 import 'package:stacked/stacked.dart';
 import 'package:video_player/video_player.dart';
@@ -30,9 +33,9 @@ class HomeScreen extends StatelessWidget {
         }
         await viewModel.init();
 
-        // WidgetsBinding.instance.addPostFrameCallback((_) {
-        //   viewModel.getUser();
-        // });
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          viewModel.getUser();
+        });
       },
       builder: (context, viewModel, child) {
         if (viewModel.isBusy) {
@@ -77,12 +80,13 @@ Widget feedVideos(HomeViewModel viewModel) {
     scrollDirection: Axis.vertical,
     itemBuilder: (context, index) {
       index = index % (viewModel.videoList!.length);
-      return videoCard(viewModel.videoList![index], context);
+      return videoCard(viewModel.videoList![index], viewModel, context);
     },
   );
 }
 
-Widget videoCard(Video video, BuildContext context) {
+Widget videoCard(Video video, HomeViewModel viewmodel, BuildContext context) {
+  // log("videoCard CreatedBy: ${video.createdBy["createdBy"]![0]["photoUrl"]}");
   return Stack(
     children: [
       video.controller != null
@@ -116,12 +120,16 @@ Widget videoCard(Video video, BuildContext context) {
               curve: Curves.ease,
             ),
       Positioned(
-        right: 15,
+        right: 20,
         bottom: 10,
-        child: CircleAvatar(
-          radius: 20,
-          backgroundImage: NetworkImage(
-              "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"),
+        child: InkWell(
+          onTap: () {
+            Beamer.of(context).beamToNamed("/profile");
+          },
+          child: CircleAvatar(
+            radius: 20,
+            backgroundImage: NetworkImage(video.creatorUrl),
+          ),
         ),
       ),
       Positioned(
@@ -131,7 +139,7 @@ Widget videoCard(Video video, BuildContext context) {
           children: [
             IconButton(
               onPressed: () {
-                // Share.share("https://j-aan.com/admin/share?url=${video.url}", subject: 'Check out this video!');
+                viewmodel.saveDownloadVideo(video.id);
               },
               icon: const FaIcon(
                 FontAwesomeIcons.download,
@@ -157,7 +165,8 @@ Widget videoCard(Video video, BuildContext context) {
           children: [
             IconButton(
               onPressed: () {
-                // Share.share("https://j-aan.com/admin/share?url=${video.url}", subject: 'Check out this video!');
+                Share.share("${video.videoUrl}",
+                    subject: 'Check out this video!');
               },
               icon: const FaIcon(
                 FontAwesomeIcons.share,
@@ -183,7 +192,7 @@ Widget videoCard(Video video, BuildContext context) {
           children: [
             IconButton(
               onPressed: () {
-                // Share.share("https://j-aan.com/admin/share?url=${video.url}", subject: 'Check out this video!');
+                viewmodel.addLike(video.id);
               },
               icon: const FaIcon(
                 FontAwesomeIcons.heart,
@@ -192,7 +201,7 @@ Widget videoCard(Video video, BuildContext context) {
               ),
             ),
             Text(
-              "${0}",
+              "${video.likes}",
               style: TextStyle(
                   fontFamily: "Canela",
                   fontSize: 16,
@@ -226,6 +235,24 @@ Widget videoCard(Video video, BuildContext context) {
                   fontWeight: FontWeight.w600),
             ),
           ],
+        ),
+      ),
+      Positioned(
+        left: 15,
+        bottom: 70,
+        child: Text(
+          video.creatorName,
+          style: GoogleFonts.zillaSlab(
+              fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
+        ),
+      ),
+      Positioned(
+        left: 15,
+        bottom: 40,
+        child: Text(
+          "${video.description} 👻",
+          style: GoogleFonts.zillaSlab(
+              fontSize: 15, color: Colors.white.withOpacity(0.7), fontWeight: FontWeight.w600),
         ),
       ),
     ],

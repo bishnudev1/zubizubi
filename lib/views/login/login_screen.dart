@@ -40,7 +40,7 @@ class LoginScreen extends StatelessWidget {
                             // if (viewModel.isLoading) return;
 
                             print("Google Sign In");
-                            viewModel.loginWithGoogle();
+                            viewModel.loginWithGoogle(context);
                           },
                           child: Padding(
                             padding:

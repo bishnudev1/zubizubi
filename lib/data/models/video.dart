@@ -3,33 +3,62 @@ import 'package:video_player/video_player.dart';
 
 class Video {
   String id;
-  String videoTitle;
+  String name;
+  String description;
   int likes;
-  String url;
+  bool hideVideo;
+  String videoUrl;
+  String creator;
+  String creatorName;
+  String created;
+  String creatorUrl;
 
   VideoPlayerController? controller;
 
-  Video({required this.id, required this.videoTitle, required this.likes, required this.url});
+  Video({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.likes,
+    required this.hideVideo,
+    required this.videoUrl,
+    required this.created,
+    required this.creator,
+    required this.creatorUrl,
+    required this.creatorName,
+  });
 
   Video.fromJson(Map<dynamic, dynamic> json)
       : id = json['id'],
-        videoTitle = json['video_title'],
+        name = json['name'], // Use 'videoTitle' directly
+        description = json["description"],
         likes = json['likes'],
-        url = json['url'];
+        hideVideo = json["hideVideo"],
+        videoUrl = json['videoUrl'],
+        creator = json['creator'],
+        created = json['created'],
+        creatorName = json['creatorName'],
+        creatorUrl = json['creatorUrl'];
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    data['video_title'] = videoTitle;
+    data['name'] = name;
+    data["description"] = description;
     data['likes'] = likes;
-    data['url'] = url;
+    data["hideVideo"] = hideVideo;
+    data['videoUrl'] = videoUrl;
+    data["created"] = created;
+    data['creator'] = creator;
+    data['creatorUrl'] = creatorUrl;
+    data['creatorName'] = creatorName;
     return data;
   }
 
   Future<void> loadController() async {
-    log("loadController called for $url");
+    log("loadController called for $videoUrl");
     // var file = await videoCacheManger.getSingleFile(url);
-    var uri = Uri.parse(url);
+    var uri = Uri.parse(videoUrl);
     controller = VideoPlayerController.networkUrl(uri);
     await controller?.initialize();
     controller?.setVolume(0);
@@ -43,10 +72,16 @@ class Video {
 
   factory Video.fromMap(Map<String, dynamic> map) {
     return Video(
-      id: "1",
-      videoTitle: map['description'],
+      id: "id",
+      name: map['name'], // Use 'videoTitle' directly
+      description: map["description"],
       likes: map['likes'],
-      url: map['videoUrl'],
+      hideVideo: map['hideVideo'],
+      videoUrl: map['videoUrl'],
+      creator: map['creator'],
+      created: map["created"],
+      creatorUrl: map['creatorUrl'],
+      creatorName: map['creatorName'],
     );
   }
 }

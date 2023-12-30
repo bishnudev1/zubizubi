@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:zubizubi/app/app.locator.dart';
 import 'package:zubizubi/services/auth_services.dart';
@@ -11,11 +12,11 @@ class LoginViewModel extends ReactiveViewModel {
     await _authServices.handleFacebookLogin();
   }
 
-  loginWithGoogle() async {
+  loginWithGoogle(BuildContext context) async {
     isLoading = true;
     notifyListeners();
     try {
-      await _authServices.handleGoogleLogin();
+      await _authServices.handleGoogleLogin(context);
     } catch (e) {
       log(e.toString());
     }

@@ -1,4 +1,6 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stacked/stacked.dart';
 import 'package:zubizubi/themes/images.dart';
@@ -15,8 +17,9 @@ class ProfileScreen extends StatelessWidget {
     return ViewModelBuilder.reactive(
       viewModelBuilder: () => ProfileViewModel(),
       onViewModelReady: (viewModel) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          viewModel.getUser();
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          await viewModel.getUser();
+          viewModel.getUserVideos(viewModel.user?.email ?? "");
         });
       },
       builder: (context, viewModel, child) {
@@ -36,108 +39,203 @@ class ProfileScreen extends StatelessWidget {
         }
         return Scaffold(
           appBar: PreferredSize(
-              preferredSize: Size.fromHeight(50),
-              child: CustomAppBar()),
+              preferredSize: Size.fromHeight(50), child: CustomAppBar()),
           body: SafeArea(
               child: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            // padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             decoration: BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage(Images.appBg), fit: BoxFit.cover)),
             child: Column(
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  radius: 60,
-                  backgroundImage: NetworkImage(
-                      "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"),
-                ),
                 SizedBox(
-                  height: 15,
+                  height: 20,
                 ),
-                Text(
-                  "Hello: ${viewModel.user?.name ?? ""}",
-                  style: GoogleFonts.lato(fontSize: 18, color: Colors.white),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  "Your email: ${viewModel.user?.email ?? ""}",
-                  style: GoogleFonts.lato(fontSize: 18, color: Colors.white),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Followers: ${viewModel.user?.likes ?? 0}",
-                      style:
-                          GoogleFonts.lato(fontSize: 18, color: Colors.white),
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Text(
-                      "Shares: ${viewModel.user?.shares ?? 0}",
-                      style:
-                          GoogleFonts.lato(fontSize: 18, color: Colors.white),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 40,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white),
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.transparent),
-                        child: Text(
-                          "Delete Profile",
-                          style: GoogleFonts.lato(
-                              fontSize: 14, color: Colors.white),
-                        ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundImage: NetworkImage(
+                            viewModel.user?.photoUrl ??
+                                "https://picsum.photos/200"),
                       ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          viewModel.logout(context);
-                        },
-                        child: Container(
-                          height: 40,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.white),
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.transparent),
-                          child: Text(
-                            "Logout Profile",
-                            style: GoogleFonts.lato(
-                                fontSize: 14, color: Colors.white),
+                      Row(
+                        children: [
+                          IconButton(
+                              onPressed: () {},
+                              icon: FaIcon(
+                                FontAwesomeIcons.userPlus,
+                                color: Colors.white,
+                                size: 18,
+                              )),
+                          IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.report,
+                                color: Colors.white,
+                              )),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    "${viewModel.user?.name ?? ""}",
+                    style: GoogleFonts.lato(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 20),
+                //   child: Text(
+                //     "Email: ${viewModel.user?.email ?? ""}",
+                //     style: GoogleFonts.lato(fontSize: 18, color: Colors.white),
+                //   ),
+                // ),
+                // SizedBox(
+                //   height: 5,
+                // ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    "I make reels for fun :)",
+                    style: GoogleFonts.lato(fontSize: 16, color: Colors.white),
+                  ),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Followers: ${viewModel.user?.followers ?? 0}",
+                        style:
+                            GoogleFonts.lato(fontSize: 16, color: Colors.white),
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Text(
+                        "Shares: ${viewModel.user?.shares ?? 0}",
+                        style:
+                            GoogleFonts.lato(fontSize: 16, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            viewModel.changeImage(context);
+                          },
+                          child: Container(
+                            height: 40,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.transparent),
+                            child: viewModel.isLoading
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 1,
+                                  )
+                                : Text(
+                                    "Update Picture",
+                                    style: GoogleFonts.lato(
+                                        fontSize: 14, color: Colors.white),
+                                  ),
                           ),
                         ),
                       ),
-                    )
-                  ],
-                )
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            viewModel.logout(context);
+                          },
+                          child: Container(
+                            height: 40,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.transparent),
+                            child: Text(
+                              "Logout Profile",
+                              style: GoogleFonts.lato(
+                                  fontSize: 14, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 25,
+                ),
+                Expanded(
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3, // 3 videos in a row
+                      crossAxisSpacing: 1.0, // Adjust as needed
+                      mainAxisSpacing: 1.0, // Adjust as needed
+                    ),
+                    itemCount: viewModel.userVideos.length,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          Beamer.of(context).beamToNamed('/home', data: {
+                            'shareUrl': viewModel.userVideos[index].videoUrl
+                          });
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              // borderRadius: BorderRadius.circular(10)
+                            ),
+                            width: MediaQuery.of(context).size.width *
+                                0.3, // Adjust as needed
+                            height: 700, // Adjust as needed
+                            child: Center(
+                              child:
+                                  Text("${viewModel.userVideos[index].name}}"),
+                            )),
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
           )),

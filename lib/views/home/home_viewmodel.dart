@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:appwrite/models.dart' as UserModel;
+import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:zubizubi/app/app.locator.dart';
 import 'package:zubizubi/data/models/user.dart';
@@ -13,27 +14,17 @@ class HomeViewModel extends BaseViewModel {
 
   User? get user => _user;
 
-
-  getUser()async{
-    UserModel.User user = await _authServices.getCurrentUser();
-    _user = User(
-      id: user.$id,
-      name: user.name,
-      email: user.email,
-      photoUrl: "",
-      likes: 0,
-      shares: 0,
-      // photoUrl: user.photoUrl,
-      createdAt: user.registration,
-    );
+  getUser() async {
+    Map<String, dynamic> user = await _authServices.getCurrentUser();
+    _user = User.fromMap(user);
     notifyListeners();
   }
 
-  logoutAccount()async{
-    await _authServices.logoutUser();
+  logoutAccount(BuildContext context) async {
+    await _authServices.logoutUser(context);
   }
 
-  List<Video>? videoList;
+  List<Video> videoList = [];
 
   final _videoServices = locator<VideoServices>();
 
@@ -44,23 +35,6 @@ class HomeViewModel extends BaseViewModel {
 
   init() async {
     await loadFetchNextBatchOfVideos();
-    // var initialVideoList = _videoServices
-    //     .demoVideoUrls()
-    //     .map<Video>((e) => Video(url: e, id: "123", likes: 32, videoTitle: "test"))
-    //     .toList();
-
-    // var random  = math.Random();
-
-    // initialVideoList.shuffle(random);
-
-    // if (videoList == null) {
-    //   videoList = initialVideoList;
-    // } else {
-    //   videoList!.addAll(initialVideoList);
-    // }
-    // loadFetchNextBatchOfVideos();
-
-    // auto play first video
     loadVideo(0);
     loadVideoInAdvance(1);
   }
@@ -124,15 +98,24 @@ class HomeViewModel extends BaseViewModel {
     loading = true;
     notifyListeners();
 
-    videoList ??= [];
-
     var newVideos = await _videoServices.fetchVideosInBatches();
     if (newVideos.length > 0) {
-      var newVideoList = newVideos
-          .map<Video>(
-              (e) => Video(url: e, id: "123", likes: 32, videoTitle: "test"))
+      log("All Videos: ${newVideos}");
+      final allNewVideos = newVideos
+          .map((e) => Video(
+                  id: e['id'],
+                  name: e['name'],
+                  description: e['description'],
+                  likes: e['likes'],
+                  hideVideo: e['hideVideo'],
+                  videoUrl: e['videoUrl'],
+                  created: e['created'],
+                  creator: e['creator'],
+                  creatorName: e['creatorName'],
+                  creatorUrl: e['creatorUrl']))
           .toList();
-      videoList!.addAll(newVideoList);
+      videoList.addAll(allNewVideos.cast<Video>());
+      notifyListeners();
     }
 
     loading = false;
@@ -157,8 +140,38 @@ class HomeViewModel extends BaseViewModel {
   parseShareUrl(String url) {
     log("parseShareUrl called with $url");
     videoList = [];
-    videoList!.add(Video(url: url, id: "123", likes: 32, videoTitle: "shared"));
+    videoList.add(Video(
+        id: "1",
+        name: "Zubi-Zubi",
+        description: "Zubi-Zubi Video",
+        likes: 0,
+        hideVideo: false,
+        creator: "Zubi-Zubi",
+        videoUrl: url,
+        created: (DateTime.now().millisecondsSinceEpoch).toString(),
+        creatorName: "Zubi-Zubi",
+        creatorUrl: ""));
     loadVideo(0);
     notifyListeners();
+  }
+
+  addLike(String documentId) async {
+    log("addLike called with $documentId");
+    try {
+      await _videoServices.addLike(documentId);
+      notifyListeners();
+    } catch (e) {
+      log("Error: $e");
+    }
+  }
+
+  saveDownloadVideo(String documentId) async {
+    log("saveDownloadVideo called with $documentId");
+    try {
+      await _videoServices.downloadVideo(documentId);
+      notifyListeners();
+    } catch (e) {
+      log("Error: $e");
+    }
   }
 }

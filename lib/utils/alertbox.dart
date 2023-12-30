@@ -2,8 +2,20 @@ import 'package:flutter/material.dart';
 
 class AlertBox extends StatelessWidget {
   String alertText;
-  VoidCallback onYesPressed;
-  AlertBox({required this.alertText, required this.onYesPressed});
+  String firstText;
+  String secondText;
+  VoidCallback onFirstPressed;
+  VoidCallback? onSecondPressed;
+  VoidCallback? thirdPressed;
+  bool showCancel;
+  AlertBox(
+      {required this.alertText,
+      required this.onFirstPressed,
+      this.onSecondPressed,
+      required this.firstText,
+      required this.secondText,
+      this.showCancel = false,
+      this.thirdPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +40,12 @@ class AlertBox extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+                      onPressed: onSecondPressed,
                       child: Container(
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12)),
-                        child: const Text(
-                          "No",
+                        child: Text(
+                          secondText.toString(),
                           style: TextStyle(
                               fontFamily: "Inter",
                               fontSize: 16,
@@ -43,18 +53,31 @@ class AlertBox extends StatelessWidget {
                         ),
                       )),
                   TextButton(
-                      onPressed: onYesPressed,
+                      onPressed: onFirstPressed,
                       child: Container(
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12)),
-                        child: const Text(
-                          "Yes",
+                        child: Text(
+                          firstText.toString(),
                           style: TextStyle(
                               fontFamily: "Canela",
                               fontSize: 16,
                               color: Colors.white),
                         ),
-                      ))
+                      )),
+                  showCancel ?TextButton(
+                      onPressed: thirdPressed,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12)),
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                              fontFamily: "Canela",
+                              fontSize: 16,
+                              color: Colors.white),
+                        ),
+                      )) : Container()
                 ],
               ),
             ],
