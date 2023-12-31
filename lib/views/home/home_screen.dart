@@ -366,6 +366,7 @@ showCommentSection(BuildContext context, HomeViewModel model, Video video) {
                               itemCount: video.comments.length,
                               itemBuilder: (context, index) {
                                 final data = jsonDecode(video.comments[index]);
+                                log("data: $data");
                                 return ListTile(
                                     leading: CircleAvatar(
                                       backgroundImage: NetworkImage(
@@ -380,15 +381,16 @@ showCommentSection(BuildContext context, HomeViewModel model, Video video) {
                                           fontWeight: FontWeight.w600),
                                     ),
                                     subtitle: Text(
-                                      data['data']['comment'].toString(),
+                                      data['data']?['comment'].toString() ?? "",
                                       style: const TextStyle(
-                                          fontFamily: "Canela",
-                                          fontSize: 16,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w600),
+                                        fontFamily: "Canela",
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                      ),
                                     ),
                                     trailing: Text(
-                                      data['data']['createdAt'].toString(),
+                                      data['data']?['createdAt'].toString() ??
+                                          "",
                                       style: TextStyle(
                                         fontSize: 10,
                                         color: Colors.black.withOpacity(0.7),

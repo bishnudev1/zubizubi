@@ -276,7 +276,7 @@ class AppwriteServices with ListenableServiceMixin {
       notifyListeners();
 
       getComments.add(jsonEncode({
-        "comment": {
+        "data": {
           "comment": comment,
           "createdAt": DateFormat('dd-MM-yy').format(DateTime.now()).toString(),
         },
