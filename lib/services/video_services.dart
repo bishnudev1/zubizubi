@@ -11,7 +11,8 @@ import 'package:zubizubi/services/appwrite_services.dart';
 import 'package:zubizubi/services/auth_services.dart';
 import 'package:zubizubi/utils/toast.dart';
 
-import '../data/models/video.dart';
+import '../data/models/user.dart' as UserModel;
+import '../data/models/video.dart' as VideoModel;
 
 class VideoServices with ListenableServiceMixin {
   final _appwriteServices = locator<AppwriteServices>();
@@ -19,7 +20,7 @@ class VideoServices with ListenableServiceMixin {
 
   addVideo(BuildContext context, IO.File image) async {
     try {
-      final user = Hive.box<User>('userBox').getAt(0);
+      final user = Hive.box<UserModel.User>('userBox').getAt(0);
       final email = user?.email;
       if (context.mounted) {
         await _appwriteServices.addNewVideo(email!, image);
@@ -87,6 +88,15 @@ class VideoServices with ListenableServiceMixin {
   downloadVideo(String documentId) async {
     try {
       await _appwriteServices.saveVideo(documentId);
+      notifyListeners();
+    } catch (e) {
+      log("Error: $e");
+    }
+  }
+
+    videoComment(BuildContext context,List comments, String id, UserModel.User user, String comment) async {
+    try {
+      await _appwriteServices.addNewComment(context,comments, id, user, comment);
       notifyListeners();
     } catch (e) {
       log("Error: $e");

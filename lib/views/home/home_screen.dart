@@ -228,7 +228,7 @@ Widget videoCard(
               onPressed: () async {
                 await viewmodel.addLike(video.id, index);
                 viewmodel.notifyListeners();
-                if(isLiked){
+                if (isLiked) {
                   await viewmodel.removeLike(video.id, index);
                 }
               },
@@ -257,6 +257,7 @@ Widget videoCard(
             IconButton(
               onPressed: () {
                 // Share.share("https://j-aan.com/admin/share?url=${video.url}", subject: 'Check out this video!');
+                showCommentSection(context, viewmodel, video);
               },
               icon: const FaIcon(
                 FontAwesomeIcons.comment,
@@ -264,8 +265,8 @@ Widget videoCard(
                 size: 26,
               ),
             ),
-            const Text(
-              "${0}",
+            Text(
+              "${video.comments.length}",
               style: TextStyle(
                   fontFamily: "Canela",
                   fontSize: 16,
@@ -296,5 +297,157 @@ Widget videoCard(
         ),
       ),
     ],
+  );
+}
+
+showCommentSection(BuildContext context, HomeViewModel model, Video video) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) {
+      return StatefulBuilder(builder: (context, setState) {
+        return Form(
+          key: model.formKey,
+          child: Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Container(
+                height: MediaQuery.of(context).size.height * 0.7,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Comments",
+                          style: TextStyle(
+                              fontFamily: "Canela",
+                              fontSize: 20,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: const FaIcon(
+                            FontAwesomeIcons.times,
+                            color: Colors.black,
+                            size: 20,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Expanded(
+                      child: video.comments.isEmpty
+                          ? Center(
+                              child: Text(
+                              "No comments yet",
+                              style: TextStyle(
+                                  fontFamily: "Canela",
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600),
+                            ))
+                          : ListView.builder(
+                              itemCount: video.comments.length,
+                              itemBuilder: (context, index) {
+                                final data = jsonDecode(video.comments[index]);
+                                return ListTile(
+                                    leading: CircleAvatar(
+                                      backgroundImage: NetworkImage(
+                                          data['user']['photoUrl'].toString()),
+                                    ),
+                                    title: Text(
+                                      data['user']['name'].toString(),
+                                      style: const TextStyle(
+                                          fontFamily: "Canela",
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    subtitle: Text(
+                                      data['data']['comment'].toString(),
+                                      style: const TextStyle(
+                                          fontFamily: "Canela",
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    trailing: Text(
+                                      data['data']['createdAt'].toString(),
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.black.withOpacity(0.7),
+                                      ),
+                                    ));
+                              },
+                            ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(model.user!.photoUrl),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: TextFormField(
+                            controller: model.commentController,
+                            decoration: const InputDecoration(
+                              hintText: "Add a comment",
+                              hintStyle: TextStyle(
+                                  fontFamily: "Canela",
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600),
+                              border: InputBorder.none,
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Please enter a comment";
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              if (model.formKey.currentState!.validate()) {
+                                model.addComment(
+                                    context, video.comments, video.id);
+                              }
+                            },
+                            icon: FaIcon(
+                              FontAwesomeIcons.solidPaperPlane,
+                              color: Colors.black,
+                              size: 20,
+                            ))
+                      ],
+                    ),
+                  ],
+                )),
+          ),
+        );
+      });
+    },
   );
 }

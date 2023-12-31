@@ -27,13 +27,14 @@ class VideoAdapter extends TypeAdapter<Video> {
       creator: fields[6] as String,
       creatorUrl: fields[9] as String,
       creatorName: fields[7] as String,
+      comments: (fields[10] as List).cast<dynamic>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Video obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -53,7 +54,9 @@ class VideoAdapter extends TypeAdapter<Video> {
       ..writeByte(8)
       ..write(obj.created)
       ..writeByte(9)
-      ..write(obj.creatorUrl);
+      ..write(obj.creatorUrl)
+      ..writeByte(10)
+      ..write(obj.comments);
   }
 
   @override

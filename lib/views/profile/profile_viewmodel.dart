@@ -44,6 +44,7 @@ class ProfileViewModel extends ReactiveViewModel {
                   creator: e['creator'],
                   creatorName: e['creatorName'],
                   creatorUrl: e['creatorUrl'],
+                  comments: e['comments'],
                 ))
             .toList();
         userVideos.addAll(allUserVideos.cast<Video>());

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io' as IO;
 import 'package:appwrite/appwrite.dart';
@@ -6,11 +7,12 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 import 'package:zubizubi/app/routes.dart';
 import 'package:zubizubi/utils/toast.dart';
 
-import '../data/models/video.dart';
+import '../data/models/user.dart' as UserModel;
 
 class AppwriteServices with ListenableServiceMixin {
   Client? _client;
@@ -114,6 +116,7 @@ class AppwriteServices with ListenableServiceMixin {
           "created": (DateTime.now().millisecondsSinceEpoch).toString(),
           "creatorUrl": getauthor['photoUrl'],
           "creatorName": getauthor['name'],
+          "comments": [],
         },
       );
 
@@ -235,6 +238,61 @@ class AppwriteServices with ListenableServiceMixin {
     try {
       await storage.getFileDownload(
           bucketId: "658ec05b5ecf34a1cea7", fileId: documentId);
+    } on PlatformException catch (e) {
+      showToast(e.message.toString());
+      log('PlatformException: $e');
+    } on AppwriteException catch (e) {
+      showToast(e.message.toString());
+      log('AppwriteException: $e');
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  addNewComment(BuildContext context, List comments, String id,
+      UserModel.User user, String comment) async {
+    try {
+      log("addNewComment: $id");
+      if (_client == null) {
+        log("Appwrite client got null");
+        null;
+      }
+      final databases = Databases(_client!);
+      final getDocument = await databases.getDocument(
+        databaseId: '658ebf7877a5df4a9f60',
+        collectionId: '658ebf9654ca69759383',
+        documentId: id,
+      );
+
+      final getComments = getDocument.data['comments'];
+
+      comments.add(jsonEncode({
+        "data": {
+          "comment": comment,
+          "createdAt": DateFormat('dd-MM-yy').format(DateTime.now()).toString(),
+        },
+        "user": user.toMap(),
+      }));
+      notifyListeners();
+
+      getComments.add(jsonEncode({
+        "comment": {
+          "comment": comment,
+          "createdAt": DateFormat('dd-MM-yy').format(DateTime.now()).toString(),
+        },
+        "user": user.toMap(),
+      }));
+
+      await databases.updateDocument(
+          documentId: id,
+          databaseId: '658ebf7877a5df4a9f60',
+          collectionId: '658ebf9654ca69759383',
+          data: {
+            "comments": getComments,
+          });
+      notifyListeners();
+      Navigator.pop(context);
+      // showToast("Comment Added Successfully");
     } on PlatformException catch (e) {
       showToast(e.message.toString());
       log('PlatformException: $e');

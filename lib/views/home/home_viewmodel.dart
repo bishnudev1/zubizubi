@@ -14,8 +14,10 @@ import 'package:collection/collection.dart';
 class HomeViewModel extends BaseViewModel {
   final _authServices = locator<AuthServices>();
   User? _user;
-
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   User? get user => _user;
+
+  TextEditingController commentController = TextEditingController();
 
   getUser() async {
     var userBox = Hive.box<User>('userBox');
@@ -135,6 +137,7 @@ class HomeViewModel extends BaseViewModel {
               created: e['created'],
               creator: e['creator'],
               creatorName: e['creatorName'],
+              comments: e['comments'],
               creatorUrl: e['creatorUrl']))
           .toList();
       videoList.addAll(allNewVideos.cast<Video>());
@@ -171,6 +174,7 @@ class HomeViewModel extends BaseViewModel {
         hideVideo: false,
         creator: "Zubi-Zubi",
         videoUrl: url,
+        comments: [],
         created: (DateTime.now().millisecondsSinceEpoch).toString(),
         creatorName: "Zubi-Zubi",
         creatorUrl: ""));
@@ -194,7 +198,7 @@ class HomeViewModel extends BaseViewModel {
     }
   }
 
-    removeLike(String documentId, int index) async {
+  removeLike(String documentId, int index) async {
     log("removeLike called with $documentId");
     log("${_user!.toMap()}");
     try {
@@ -210,6 +214,18 @@ class HomeViewModel extends BaseViewModel {
     log("saveDownloadVideo called with $documentId");
     try {
       await _videoServices.downloadVideo(documentId);
+      notifyListeners();
+    } catch (e) {
+      log("Error: $e");
+    }
+  }
+
+  addComment(BuildContext context,List comment, String index) async {
+    log("addComment called with $comment");
+    try {
+      await _videoServices.videoComment(context,comment, index, _user!, commentController.text.trim().toString());
+      notifyListeners();
+      commentController.clear();
       notifyListeners();
     } catch (e) {
       log("Error: $e");

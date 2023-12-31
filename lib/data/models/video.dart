@@ -36,6 +36,9 @@ class Video extends HiveObject{
   @HiveField(9)
   String creatorUrl;
 
+    @HiveField(10)
+  List<dynamic> comments;
+
   VideoPlayerController? controller;
 
   Video({
@@ -49,6 +52,7 @@ class Video extends HiveObject{
     required this.creator,
     required this.creatorUrl,
     required this.creatorName,
+    required this.comments,
   });
 
   Video.fromJson(Map<dynamic, dynamic> json)
@@ -61,6 +65,7 @@ class Video extends HiveObject{
         creator = json['creator'],
         created = json['created'],
         creatorName = json['creatorName'],
+        comments = json['comments'],
         creatorUrl = json['creatorUrl'];
 
   Map<String, dynamic> toJson() {
@@ -75,6 +80,7 @@ class Video extends HiveObject{
     data['creator'] = creator;
     data['creatorUrl'] = creatorUrl;
     data['creatorName'] = creatorName;
+    data['comments'] = comments;
     return data;
   }
 
@@ -105,6 +111,7 @@ class Video extends HiveObject{
       created: map["created"],
       creatorUrl: map['creatorUrl'],
       creatorName: map['creatorName'],
+      comments: map['comments'],
     );
   }
 }
