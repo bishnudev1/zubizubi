@@ -42,37 +42,37 @@ class HomeViewModel extends BaseViewModel {
   }
 
   changeVideo(index) async {
-    if (videoList![prevVideo].controller != null) {
-      videoList![prevVideo].controller!.pause();
+    if (videoList[prevVideo].controller != null) {
+      videoList[prevVideo].controller!.pause();
 
-      if (videoList![prevVideo].controller!.value.isInitialized) {
-        videoList![prevVideo].controller!.seekTo(Duration.zero);
+      if (videoList[prevVideo].controller!.value.isInitialized) {
+        videoList[prevVideo].controller!.seekTo(Duration.zero);
       }
 
       if (index > prevVideo &&
           prevVideo - 1 >= 0 &&
-          videoList![prevVideo - 1].controller != null &&
-          videoList![prevVideo - 1].controller!.value.isInitialized) {
+          videoList[prevVideo - 1].controller != null &&
+          videoList[prevVideo - 1].controller!.value.isInitialized) {
         log("disposing video index: ${prevVideo - 1}");
-        videoList![prevVideo - 1].dispose();
+        videoList[prevVideo - 1].dispose();
       }
 
       if (index < prevVideo &&
-          prevVideo + 1 < videoList!.length &&
-          videoList![prevVideo + 1].controller != null &&
-          videoList![prevVideo + 1].controller!.value.isInitialized) {
+          prevVideo + 1 < videoList.length &&
+          videoList[prevVideo + 1].controller != null &&
+          videoList[prevVideo + 1].controller!.value.isInitialized) {
         log("disposing video index: ${prevVideo + 1}");
-        videoList![prevVideo + 1].dispose();
+        videoList[prevVideo + 1].dispose();
       }
     }
 
-    if (videoList![index].controller == null) {
-      await videoList![index].loadController();
+    if (videoList[index].controller == null) {
+      await videoList[index].loadController();
     }
-    videoList![index].controller!.play();
+    videoList[index].controller!.play();
 
     //  next video in advance
-    if (index + 1 < videoList!.length) {
+    if (index + 1 < videoList.length) {
       log("loading video in advance for ${index + 1}");
       loadVideoInAdvance(index + 1);
     }
@@ -84,9 +84,7 @@ class HomeViewModel extends BaseViewModel {
     prevVideo = index;
 
     // fetch next batch of videos
-    if (videoList!.length - 2 >= 0 &&
-        index >= videoList!.length - 2 &&
-        !loading) {
+    if (videoList.length - 2 >= 0 && index >= videoList.length - 2 && !loading) {
       loadFetchNextBatchOfVideos();
     }
 
@@ -102,19 +100,19 @@ class HomeViewModel extends BaseViewModel {
 
     var newVideos = await _videoServices.fetchVideosInBatches();
     if (newVideos.length > 0) {
-      log("All Videos: ${newVideos}");
+      log("All Videos: $newVideos");
       final allNewVideos = newVideos
           .map((e) => Video(
-                  id: e['id'],
-                  name: e['name'],
-                  description: e['description'],
-                  likes: e['likes'],
-                  hideVideo: e['hideVideo'],
-                  videoUrl: e['videoUrl'],
-                  created: e['created'],
-                  creator: e['creator'],
-                  creatorName: e['creatorName'],
-                  creatorUrl: e['creatorUrl']))
+              id: e['id'],
+              name: e['name'],
+              description: e['description'],
+              likes: e['likes'],
+              hideVideo: e['hideVideo'],
+              videoUrl: e['videoUrl'],
+              created: e['created'],
+              creator: e['creator'],
+              creatorName: e['creatorName'],
+              creatorUrl: e['creatorUrl']))
           .toList();
       videoList.addAll(allNewVideos.cast<Video>());
       notifyListeners();
@@ -125,16 +123,16 @@ class HomeViewModel extends BaseViewModel {
   }
 
   void loadVideo(int index) async {
-    if (videoList!.length > index) {
-      await videoList![index].loadController();
-      videoList![index].controller?.play();
+    if (videoList.length > index) {
+      await videoList[index].loadController();
+      videoList[index].controller?.play();
     }
     notifyListeners();
   }
 
   void loadVideoInAdvance(int index) async {
-    if (videoList!.length > index && videoList![index].controller == null) {
-      await videoList![index].loadController();
+    if (videoList.length > index && videoList[index].controller == null) {
+      await videoList[index].loadController();
     }
     notifyListeners();
   }
