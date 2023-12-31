@@ -199,6 +199,7 @@ class AuthServices with ListenableServiceMixin {
       return;
     }
     try {
+      var userBox = Hive.box<User>('userBox');
       final account = Account(client);
       final res = await account.get();
 
@@ -218,6 +219,20 @@ class AuthServices with ListenableServiceMixin {
           });
 
       log("doc: ${doc.toString()}");
+
+      await userBox.put(
+          0,
+          User.fromMap(
+            {
+              "id": getUser.documents[0].data["id"],
+              "name": getUser.documents[0].data["name"],
+              "email": getUser.documents[0].data["email"],
+              "photoUrl": "https://www.dpforwhatsapp.in/img/no-dp/19.webp",
+              "followers": getUser.documents[0].data["followers"],
+              "shares": getUser.documents[0].data["shares"],
+              "createdAt": getUser.documents[0].data["createdAt"],
+            },
+          ));
 
       notifyListeners();
       showToast("Profile Image Deleted");
@@ -242,6 +257,7 @@ class AuthServices with ListenableServiceMixin {
       return;
     }
     try {
+      var userBox = Hive.box<User>('userBox');
       final account = Account(client);
       final res = await account.get();
 
@@ -264,6 +280,11 @@ class AuthServices with ListenableServiceMixin {
 
       final databases = Databases(client);
 
+      final getUser = await databases.listDocuments(
+          databaseId: "658ebf7877a5df4a9f60",
+          collectionId: "658ec36c61220704a694",
+          queries: [Query.equal("email", res.email)]);
+
       final doc = await databases.updateDocument(
           documentId: id,
           databaseId: "658ebf7877a5df4a9f60",
@@ -273,6 +294,20 @@ class AuthServices with ListenableServiceMixin {
           });
 
       log("doc: ${doc.toString()}");
+
+      await userBox.put(
+          0,
+          User.fromMap(
+            {
+              "id": getUser.documents[0].data["id"],
+              "name": getUser.documents[0].data["name"],
+              "email": getUser.documents[0].data["email"],
+              "photoUrl": imageurl,
+              "followers": getUser.documents[0].data["followers"],
+              "shares": getUser.documents[0].data["shares"],
+              "createdAt": getUser.documents[0].data["createdAt"],
+            },
+          ));
 
       notifyListeners();
       showToast("Profile Image Updated");
