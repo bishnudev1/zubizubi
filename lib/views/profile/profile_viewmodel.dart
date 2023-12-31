@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stacked/stacked.dart';
 import 'package:zubizubi/app/app.locator.dart';
@@ -33,16 +34,17 @@ class ProfileViewModel extends ReactiveViewModel {
       if (videos.length > 0) {
         final allUserVideos = videos
             .map((e) => Video(
-                    id: e['id'],
-                    name: e['name'],
-                    description: e['description'],
-                    likes: e['likes'],
-                    hideVideo: e['hideVideo'],
-                    videoUrl: e['videoUrl'],
-                    created: e['created'],
-                    creator: e['creator'],
-                    creatorName: e['creatorName'],
-                    creatorUrl: e['creatorUrl'],))
+                  id: e['id'],
+                  name: e['name'],
+                  description: e['description'],
+                  likes: e['likes'],
+                  hideVideo: e['hideVideo'],
+                  videoUrl: e['videoUrl'],
+                  created: e['created'],
+                  creator: e['creator'],
+                  creatorName: e['creatorName'],
+                  creatorUrl: e['creatorUrl'],
+                ))
             .toList();
         userVideos.addAll(allUserVideos.cast<Video>());
         log("userVideos: ${userVideos}");
@@ -55,8 +57,11 @@ class ProfileViewModel extends ReactiveViewModel {
   }
 
   getUser() async {
-    Map<String, dynamic> user = await _authServices.getCurrentUser();
-    _user = User.fromMap(user);
+    var userBox = Hive.box<User>('userBox');
+
+    log("User Box Length: ${userBox.length}");
+
+    _user = userBox.getAt(0);
     notifyListeners();
   }
 

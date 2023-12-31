@@ -127,14 +127,14 @@ class ProfileScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Followers: ${viewModel.user?.followers ?? 0}",
+                        "Followers: ${viewModel.user?.followers.length ?? 0}",
                         style: GoogleFonts.lato(fontSize: 16, color: Colors.white),
                       ),
                       SizedBox(
                         width: 15,
                       ),
                       Text(
-                        "Shares: ${viewModel.user?.shares ?? 0}",
+                        "Shares: ${viewModel.user?.shares.length ?? 0}",
                         style: GoogleFonts.lato(fontSize: 16, color: Colors.white),
                       ),
                     ],

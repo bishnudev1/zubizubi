@@ -12,7 +12,7 @@ class SplashViewModel extends ReactiveViewModel {
   final _authServices = locator<AuthServices>();
 
   init(BuildContext context) async {
-    final currentUser = await _authServices.getCurrentUser();
+    final currentUser = await _authServices.getLocalUser();
 
     // log("SPlash Screen Current User: $currentUser");
     if (!routerDelegate.beamingHistory.first.history.first.routeInformation.uri

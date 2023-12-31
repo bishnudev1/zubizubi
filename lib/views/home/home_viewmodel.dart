@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:appwrite/models.dart' as UserModel;
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:stacked/stacked.dart';
 import 'package:zubizubi/app/app.locator.dart';
 import 'package:zubizubi/data/models/user.dart';
@@ -15,8 +16,9 @@ class HomeViewModel extends BaseViewModel {
   User? get user => _user;
 
   getUser() async {
-    Map<String, dynamic> user = await _authServices.getCurrentUser();
-    _user = User.fromMap(user);
+    var userBox = Hive.box<User>('userBox');
+
+    _user = userBox.getAt(0);
     notifyListeners();
   }
 

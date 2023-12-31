@@ -4,6 +4,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:zubizubi/app/app.locator.dart';
@@ -36,8 +37,8 @@ class AuthServices with ListenableServiceMixin {
     } on AppwriteException catch (e) {
       showToast(e.message.toString());
       log('AppwriteException: $e');
-    }finally {
-    routerDelegate.beamToNamed('/shell');
+    } finally {
+      routerDelegate.beamToNamed('/shell');
     }
 //     final LoginResult result = await FacebookAuth.instance
 //         .login(); // by default we request the email and the public profile
@@ -52,19 +53,23 @@ class AuthServices with ListenableServiceMixin {
 //     }
   }
 
+  checkHiveStatus() async {
+    var userBox = Hive.box<User>('userBox');
+    log("user in hive with check: ${userBox}");
+  }
+
   handleGoogleLogin(BuildContext context) async {
     if (client == null) {
       showToast("Appwrite Client Initialization Failed");
       return;
     }
     try {
+      var userBox = Hive.box<User>('userBox');
       final account = Account(client);
 
       await account.createOAuth2Session(provider: 'google');
 
       final res = await account.get();
-
-      log('Current User: ${res.toString()}');
 
       final databases = Databases(client);
 
@@ -73,21 +78,34 @@ class AuthServices with ListenableServiceMixin {
           collectionId: "658ec36c61220704a694",
           queries: [Query.equal("email", res.email)]);
 
-      log("isExist: ${isExist.documents.length}");
+      log("isExist: ${isExist.documents[0].data["id"]}");
 
       if (isExist.documents.isEmpty) {
         final documentId = DateTime.now().millisecondsSinceEpoch.toString();
 
-        User user = User(
-          id: documentId,
-          name: res.name,
-          email: res.email,
-          photoUrl:
-              "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png",
-          followers: 0,
-          shares: 0,
-          createdAt: DateTime.now().toString(),
+        final id = documentId;
+        final name = res.name;
+        final email = res.email;
+        final photoUrl =
+            "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png";
+        final followers = [];
+        final shares = [];
+        final createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+
+        final user = User.fromMap(
+          {
+            "id": id,
+            "name": name,
+            "email": email,
+            "photoUrl": photoUrl,
+            "followers": followers,
+            "shares": shares,
+            "createdAt": createdAt,
+          },
         );
+
+        await userBox.clear();
+        await userBox.add(user);
 
         Map<String, dynamic> userData = user.toMap();
 
@@ -100,8 +118,38 @@ class AuthServices with ListenableServiceMixin {
         log("doc: ${doc.toString()}");
       }
 
-      showToast("Welcome ${res.name}");
-      notifyListeners();
+      // log("Email aka LOL: ${isExist.documents[0].data['email']}");
+      else {
+        final id = isExist.documents[0].data["id"];
+        final name = isExist.documents[0].data["name"];
+        final email = isExist.documents[0].data["email"];
+        final photoUrl = isExist.documents[0].data["photoUrl"];
+        final followers = isExist.documents[0].data["followers"];
+        final shares = isExist.documents[0].data["shares"];
+        final createdAt = isExist.documents[0].data["createdAt"];
+
+        final newUser = User.fromMap(
+          {
+            "id": id,
+            "name": name,
+            "email": email,
+            "photoUrl": photoUrl,
+            "followers": followers,
+            "shares": shares,
+            "createdAt": createdAt,
+          },
+        );
+
+        log("newUser: ${newUser.name}");
+
+        await userBox.clear();
+        await userBox.add(newUser);
+
+        log("user in hive again: ${userBox.getAt(0)?.name}");
+
+        showToast("Welcome ${res.name}");
+        notifyListeners();
+      }
     } on PlatformException catch (e) {
       showToast(e.message.toString());
       log('PlatformException: $e');
@@ -115,24 +163,27 @@ class AuthServices with ListenableServiceMixin {
     }
   }
 
-  getCurrentUser() async {
-    if (client == null) {
-      showToast("Appwrite Client Initialization Failed");
-      return null;
-    }
+  // getCurrentUser() async {
+  //   try {
+  //     var userBox = Hive.box<User>('userBox');
+  //     User? user = userBox.getAt(0);
+  //     log("user in hive: ${user?.name}");
+  //     return user;
+  //   } on PlatformException catch (e) {
+  //     return null;
+  //   } on AppwriteException catch (e) {
+  //     return null;
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
+
+  getLocalUser() async {
     try {
-      final account = Account(client);
-      final res = await account.get();
-
-      final databases = Databases(client);
-
-      final currentUser = await databases.listDocuments(
-          databaseId: "658ebf7877a5df4a9f60",
-          collectionId: "658ec36c61220704a694",
-          queries: [Query.equal("email", res.email)]);
-
-      notifyListeners();
-      return currentUser.documents.first.data;
+      var userBox = Hive.box<User>('userBox');
+      User? user = userBox.getAt(0);
+      log("user in hive: ${user?.name}");
+      return user;
     } on PlatformException catch (e) {
       return null;
     } on AppwriteException catch (e) {

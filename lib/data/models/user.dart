@@ -1,23 +1,39 @@
-class User{
-  String ?id;
-  String? name;
-  String? email;
-  String? photoUrl;
-  int? followers;
-  int? shares;
-  String? createdAt;
+import 'package:hive/hive.dart';
+part 'user.g.dart';
 
-  User({
-    this.id,
-    this.name,
-    this.email,
-    this.followers,
-    this.shares,
-    this.createdAt,
-    this.photoUrl
-  });
+@HiveType(typeId: 1)
+class User extends HiveObject {
+  @HiveField(0)
+  String id;
 
-  factory User.fromMap(Map<String, dynamic> json){
+  @HiveField(1)
+  String name;
+
+  @HiveField(2)
+  String email;
+
+  @HiveField(3)
+  String photoUrl;
+
+  @HiveField(4)
+  List<dynamic> followers;
+
+  @HiveField(5)
+  List<dynamic> shares;
+
+  @HiveField(6)
+  String createdAt;
+
+  User(
+      {required this.id,
+      required this.name,
+      required this.email,
+      required this.followers,
+      required this.shares,
+      required this.createdAt,
+      required this.photoUrl});
+
+  factory User.fromMap(Map<String, dynamic> json) {
     return User(
       id: json['id'],
       name: json['name'],
@@ -29,7 +45,7 @@ class User{
     );
   }
 
-  Map<String, dynamic> toMap(){
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,

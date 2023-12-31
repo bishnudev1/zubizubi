@@ -4,6 +4,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:stacked/stacked.dart';
 import 'package:zubizubi/app/app.locator.dart';
 import 'package:zubizubi/services/appwrite_services.dart';
@@ -16,10 +17,10 @@ class VideoServices with ListenableServiceMixin {
 
   addVideo(BuildContext context, IO.File image) async {
     try {
-      final user = await _authServices.getCurrentUser();
-      final email = user['email'];
+      final user = Hive.box<User>('userBox').getAt(0);
+      final email = user?.email;
       if (context.mounted) {
-        await _appwriteServices.addNewVideo(email, image);
+        await _appwriteServices.addNewVideo(email!, image);
       }
       notifyListeners();
     } on PlatformException catch (e) {
