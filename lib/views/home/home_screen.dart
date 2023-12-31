@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'dart:developer';
-
+import 'package:collection/collection.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -110,13 +111,17 @@ Widget feedVideos(HomeViewModel viewModel) {
     scrollDirection: Axis.vertical,
     itemBuilder: (context, index) {
       index = index % (viewModel.videoList.length);
-      return videoCard(viewModel.videoList[index], viewModel, context);
+      return videoCard(viewModel.videoList[index], viewModel, context, index);
     },
   );
 }
 
-Widget videoCard(Video video, HomeViewModel viewmodel, BuildContext context) {
-  // log("videoCard CreatedBy: ${video.createdBy["createdBy"]![0]["photoUrl"]}");
+Widget videoCard(
+    Video video, HomeViewModel viewmodel, BuildContext context, int index) {
+  // viewmodel.checkIsVideoLikedByUser(video);
+
+  final isLiked = video.likes.contains(viewmodel.user?.email.toString());
+
   return Stack(
     children: [
       video.controller != null
@@ -157,7 +162,7 @@ Widget videoCard(Video video, HomeViewModel viewmodel, BuildContext context) {
             Beamer.of(context).beamToNamed("/profile");
           },
           child: CircleAvatar(
-            radius: 20,
+            radius: 16,
             backgroundImage: NetworkImage(video.creatorUrl),
           ),
         ),
@@ -174,13 +179,16 @@ Widget videoCard(Video video, HomeViewModel viewmodel, BuildContext context) {
               icon: const FaIcon(
                 FontAwesomeIcons.download,
                 color: Colors.white,
-                size: 30,
+                size: 25,
               ),
             ),
             const Text(
               "Save",
               style: TextStyle(
-                  fontFamily: "Canela", fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
+                  fontFamily: "Canela",
+                  fontSize: 14,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -197,13 +205,16 @@ Widget videoCard(Video video, HomeViewModel viewmodel, BuildContext context) {
               icon: const FaIcon(
                 FontAwesomeIcons.share,
                 color: Colors.white,
-                size: 30,
+                size: 25,
               ),
             ),
             const Text(
               "Share",
               style: TextStyle(
-                  fontFamily: "Canela", fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
+                  fontFamily: "Canela",
+                  fontSize: 14,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -214,19 +225,26 @@ Widget videoCard(Video video, HomeViewModel viewmodel, BuildContext context) {
         child: Column(
           children: [
             IconButton(
-              onPressed: () {
-                viewmodel.addLike(video.id);
+              onPressed: () async {
+                await viewmodel.addLike(video.id, index);
+                viewmodel.notifyListeners();
+                if(isLiked){
+                  await viewmodel.removeLike(video.id, index);
+                }
               },
-              icon: const FaIcon(
-                FontAwesomeIcons.heart,
-                color: Colors.white,
-                size: 30,
+              icon: FaIcon(
+                FontAwesomeIcons.solidHeart,
+                color: isLiked ? Colors.pink : Colors.white,
+                size: 25,
               ),
             ),
             Text(
-              "${video.likes}",
+              "${video.likes.length}",
               style: const TextStyle(
-                  fontFamily: "Canela", fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
+                  fontFamily: "Canela",
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -243,13 +261,16 @@ Widget videoCard(Video video, HomeViewModel viewmodel, BuildContext context) {
               icon: const FaIcon(
                 FontAwesomeIcons.comment,
                 color: Colors.white,
-                size: 30,
+                size: 26,
               ),
             ),
             const Text(
               "${0}",
               style: TextStyle(
-                  fontFamily: "Canela", fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
+                  fontFamily: "Canela",
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -259,7 +280,8 @@ Widget videoCard(Video video, HomeViewModel viewmodel, BuildContext context) {
         bottom: 70,
         child: Text(
           video.creatorName,
-          style: GoogleFonts.zillaSlab(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
+          style: GoogleFonts.zillaSlab(
+              fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
         ),
       ),
       Positioned(
@@ -268,7 +290,9 @@ Widget videoCard(Video video, HomeViewModel viewmodel, BuildContext context) {
         child: Text(
           "${video.description} 👻",
           style: GoogleFonts.zillaSlab(
-              fontSize: 15, color: Colors.white.withOpacity(0.7), fontWeight: FontWeight.w600),
+              fontSize: 15,
+              color: Colors.white.withOpacity(0.7),
+              fontWeight: FontWeight.w600),
         ),
       ),
     ],

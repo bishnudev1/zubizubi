@@ -178,6 +178,30 @@ class AuthServices with ListenableServiceMixin {
   //   }
   // }
 
+  getUser() async {
+    if (client == null) {
+      showToast("Appwrite Client Initialization Failed");
+      return null;
+    }
+    try {
+      final account = Account(client);
+      final res = await account.get();
+      final databases = Databases(client);
+      final currentUser = await databases.listDocuments(
+          databaseId: "658ebf7877a5df4a9f60",
+          collectionId: "658ec36c61220704a694",
+          queries: [Query.equal("email", res.email)]);
+      notifyListeners();
+      return currentUser.documents.first.data;
+    } on PlatformException catch (e) {
+      return null;
+    } on AppwriteException catch (e) {
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   getLocalUser() async {
     try {
       var userBox = Hive.box<User>('userBox');

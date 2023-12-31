@@ -1,16 +1,39 @@
 import 'dart:developer';
 import 'package:video_player/video_player.dart';
+import 'package:hive/hive.dart';
+part 'video.g.dart';
 
-class Video {
+@HiveType(typeId: 1)
+class Video extends HiveObject{
+
+  @HiveField(0)
   String id;
+
+  @HiveField(1)
   String name;
+
+  @HiveField(2)
   String description;
-  int likes;
+
+  @HiveField(3)
+  List<dynamic> likes;
+
+  @HiveField(4)
   bool hideVideo;
+
+  @HiveField(5)
   String videoUrl;
+
+  @HiveField(6)
   String creator;
+
+  @HiveField(7)
   String creatorName;
+
+  @HiveField(8)
   String created;
+
+  @HiveField(9)
   String creatorUrl;
 
   VideoPlayerController? controller;

@@ -5,9 +5,12 @@ import 'package:appwrite/models.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 import 'package:stacked/stacked.dart';
 import 'package:zubizubi/app/routes.dart';
 import 'package:zubizubi/utils/toast.dart';
+
+import '../data/models/video.dart';
 
 class AppwriteServices with ListenableServiceMixin {
   Client? _client;
@@ -103,7 +106,7 @@ class AppwriteServices with ListenableServiceMixin {
         data: {
           "id": videoId,
           "name": fileName,
-          "likes": 0,
+          "likes": [],
           "description": "Zubi-Zubi Video",
           "hideVideo": false,
           "creator": email,
@@ -128,7 +131,8 @@ class AppwriteServices with ListenableServiceMixin {
     }
   }
 
-  likeVideo(String documentId) async {
+  likeVideo(String documentId, String email, List videoList) async {
+    log("likedUser: $email");
     if (_client == null) {
       log("Appwrite client got null");
       null;
@@ -143,15 +147,71 @@ class AppwriteServices with ListenableServiceMixin {
       );
 
       final likes = getDocument.data['likes'];
+      log("likes: $likes");
 
-      final newLikes = likes + 1;
+      if (likes.contains(email.toString())) {
+        log("returning");
+        return;
+      }
+
+      videoList.add(email.toString());
+      notifyListeners();
+
+      likes.add(email.toString());
 
       await databases.updateDocument(
           documentId: documentId,
           databaseId: '658ebf7877a5df4a9f60',
           collectionId: '658ebf9654ca69759383',
           data: {
-            "likes": newLikes,
+            "likes": likes,
+          });
+      notifyListeners();
+    } on PlatformException catch (e) {
+      showToast(e.message.toString());
+      log('PlatformException: $e');
+    } on AppwriteException catch (e) {
+      showToast(e.message.toString());
+      log('AppwriteException: $e');
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  dislikeVideo(String documentId, String email, List videoList) async {
+    log("disLikedUser: $email");
+    if (_client == null) {
+      log("Appwrite client got null");
+      null;
+    }
+    final databases = Databases(_client!);
+
+    try {
+      final getDocument = await databases.getDocument(
+        databaseId: '658ebf7877a5df4a9f60',
+        collectionId: '658ebf9654ca69759383',
+        documentId: documentId,
+      );
+
+      final likes = getDocument.data['likes'];
+      log("likes: $likes");
+
+      if (!likes.contains(email.toString())) {
+        log("returning");
+        return;
+      }
+
+      videoList.remove(email.toString());
+      notifyListeners();
+
+      likes.remove(email.toString());
+
+      await databases.updateDocument(
+          documentId: documentId,
+          databaseId: '658ebf7877a5df4a9f60',
+          collectionId: '658ebf9654ca69759383',
+          data: {
+            "likes": likes,
           });
       notifyListeners();
     } on PlatformException catch (e) {
@@ -173,7 +233,8 @@ class AppwriteServices with ListenableServiceMixin {
     final storage = Storage(_client!);
 
     try {
-      await storage.getFileDownload(bucketId: "658ec05b5ecf34a1cea7", fileId: documentId);
+      await storage.getFileDownload(
+          bucketId: "658ec05b5ecf34a1cea7", fileId: documentId);
     } on PlatformException catch (e) {
       showToast(e.message.toString());
       log('PlatformException: $e');

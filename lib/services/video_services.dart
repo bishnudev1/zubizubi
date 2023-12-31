@@ -11,6 +11,8 @@ import 'package:zubizubi/services/appwrite_services.dart';
 import 'package:zubizubi/services/auth_services.dart';
 import 'package:zubizubi/utils/toast.dart';
 
+import '../data/models/video.dart';
+
 class VideoServices with ListenableServiceMixin {
   final _appwriteServices = locator<AppwriteServices>();
   final _authServices = locator<AuthServices>();
@@ -64,9 +66,18 @@ class VideoServices with ListenableServiceMixin {
     return videos;
   }
 
-  addLike(String documentId) async {
+  addLike(String documentId, String email, List videoList) async {
     try {
-      await _appwriteServices.likeVideo(documentId);
+      await _appwriteServices.likeVideo(documentId, email, videoList);
+      notifyListeners();
+    } catch (e) {
+      log("Error: $e");
+    }
+  }
+
+  removeLike(String documentId, String email, List videoList) async {
+    try {
+      await _appwriteServices.dislikeVideo(documentId, email, videoList);
       notifyListeners();
     } catch (e) {
       log("Error: $e");

@@ -11,6 +11,7 @@ import 'package:zubizubi/services/appwrite_services.dart';
 import 'package:zubizubi/services/auth_services.dart';
 
 import 'data/models/user.dart';
+import 'data/models/video.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +19,7 @@ Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
   var userBox = await Hive.openBox<User>('userBox');
+  var videoBox = await Hive.openBox<Video>('videoBox');
   log("UserBox is open: ${userBox.isOpen}, UserBox is empty: ${userBox.isEmpty}, UserBox length: ${userBox.length}, UserBox values: ${userBox.values}");
   setupLocator();
   locator<AppwriteServices>();

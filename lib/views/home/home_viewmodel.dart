@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:appwrite/models.dart' as UserModel;
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:zubizubi/data/models/user.dart';
 import '../../data/models/video.dart';
 import '../../services/auth_services.dart';
 import '../../services/video_services.dart';
+import 'package:collection/collection.dart';
 
 class HomeViewModel extends BaseViewModel {
   final _authServices = locator<AuthServices>();
@@ -19,7 +21,26 @@ class HomeViewModel extends BaseViewModel {
     var userBox = Hive.box<User>('userBox');
 
     _user = userBox.getAt(0);
+
     notifyListeners();
+  }
+
+  checkIsVideoLikedByUser(Video video) async {
+    final resp = await _authServices.getUser();
+
+    final userMap = User.fromMap(resp);
+
+    String videoLikesMap = video.likes[0];
+
+    Map<String, dynamic> userMapForComparison = {
+      "name": userMap.name,
+      "email": userMap.email,
+      "photoUrl": userMap.photoUrl,
+      "id": userMap.id,
+      "createdAt": userMap.createdAt,
+      "followers": userMap.followers,
+      "shares": userMap.shares
+    };
   }
 
   logoutAccount(BuildContext context) async {
@@ -84,7 +105,9 @@ class HomeViewModel extends BaseViewModel {
     prevVideo = index;
 
     // fetch next batch of videos
-    if (videoList.length - 2 >= 0 && index >= videoList.length - 2 && !loading) {
+    if (videoList.length - 2 >= 0 &&
+        index >= videoList.length - 2 &&
+        !loading) {
       loadFetchNextBatchOfVideos();
     }
 
@@ -144,7 +167,7 @@ class HomeViewModel extends BaseViewModel {
         id: "1",
         name: "Zubi-Zubi",
         description: "Zubi-Zubi Video",
-        likes: 0,
+        likes: [],
         hideVideo: false,
         creator: "Zubi-Zubi",
         videoUrl: url,
@@ -155,10 +178,28 @@ class HomeViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  addLike(String documentId) async {
+  addLike(String documentId, int index) async {
     log("addLike called with $documentId");
+    log("${_user!.toMap()}");
+    // final videoBox = Hive.box<Video>('videoBox');
     try {
-      await _videoServices.addLike(documentId);
+      // videoBox.get(documentId)?.likes.add(_user!.toMap().toString());
+      // videoList[currentIndex].likes.add(_user!.toMap().toString());
+      // notifyListeners();
+      await _videoServices.addLike(
+          documentId, _user!.email, videoList[index].likes);
+      notifyListeners();
+    } catch (e) {
+      log("Error: $e");
+    }
+  }
+
+    removeLike(String documentId, int index) async {
+    log("removeLike called with $documentId");
+    log("${_user!.toMap()}");
+    try {
+      await _videoServices.removeLike(
+          documentId, _user!.email, videoList[index].likes);
       notifyListeners();
     } catch (e) {
       log("Error: $e");
