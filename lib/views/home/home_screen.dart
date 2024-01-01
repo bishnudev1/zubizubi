@@ -368,6 +368,40 @@ showCommentSection(BuildContext context, HomeViewModel model, Video video) {
                                 final data = jsonDecode(video.comments[index]);
                                 log("data: $data");
                                 return ListTile(
+                                    onLongPress: () {
+                                      if (data['user']['email'] ==
+                                          model.user?.email) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                title: const Text(
+                                                    "Delete Comment"),
+                                                content: const Text(
+                                                    "Are you sure you want to delete this comment?"),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: const Text("No")),
+                                                  TextButton(
+                                                      onPressed: ()async{
+       await                                                 model.deleteComment(
+                                                            context,
+                                                            video.comments,
+                                                            video.id,
+                                                            data);
+                                                        Navigator.pop(context);
+                                                        // Navigator.pop(context);
+                                                        model.notifyListeners();
+                                                      },
+                                                      child: const Text("Yes")),
+                                                ],
+                                              );
+                                            });
+                                      }
+                                    },
                                     leading: CircleAvatar(
                                       backgroundImage: NetworkImage(
                                           data['user']['photoUrl'].toString()),

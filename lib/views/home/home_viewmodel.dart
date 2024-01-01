@@ -231,4 +231,14 @@ class HomeViewModel extends BaseViewModel {
       log("Error: $e");
     }
   }
+
+  deleteComment(BuildContext context,List comment, String id, dynamic commentData) async {
+    log("deleteComment called with $comment");
+    try {
+      await _videoServices.deleteMyComment(context,comment, id, commentData);
+      notifyListeners();
+    } catch (e) {
+      log("Error: $e");
+    }
+  }
 }

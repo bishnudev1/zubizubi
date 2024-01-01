@@ -249,6 +249,53 @@ class AppwriteServices with ListenableServiceMixin {
     }
   }
 
+  deleteComment(
+      BuildContext context, List comments, String id, dynamic comment) async {
+    try {
+      log("deleteComment: $id");
+      if (_client == null) {
+        log("Appwrite client got null");
+        null;
+      }
+      final databases = Databases(_client!);
+      final getDocument = await databases.getDocument(
+        databaseId: '658ebf7877a5df4a9f60',
+        collectionId: '658ebf9654ca69759383',
+        documentId: id,
+      );
+
+      final getComments = getDocument.data['comments'];
+
+      comments.removeWhere((element) => element == jsonEncode(comment));
+
+      notifyListeners();
+
+      getComments.removeWhere((element) => element == jsonEncode(comment));
+
+      await databases.updateDocument(
+          documentId: id,
+          databaseId: '658ebf7877a5df4a9f60',
+          collectionId: '658ebf9654ca69759383',
+          data: {
+            "comments": getComments,
+          });
+
+
+      // routerDelegate.popBeamLocation();
+      notifyListeners();
+
+      //
+    } on PlatformException catch (e) {
+      showToast(e.message.toString());
+      log('PlatformException: $e');
+    } on AppwriteException catch (e) {
+      showToast(e.message.toString());
+      log('AppwriteException: $e');
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   addNewComment(BuildContext context, List comments, String id,
       UserModel.User user, String comment) async {
     try {
