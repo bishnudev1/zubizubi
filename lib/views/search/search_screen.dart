@@ -97,6 +97,8 @@ class SearchScreen extends StatelessWidget {
                       final isContains =
                           myFollowers!.contains(userFollowers.email);
 
+                      final isMe = viewModel.user?.email == userFollowers.email;
+
                       log("isContains: ${isContains}");
 
                       return Container(
@@ -158,6 +160,9 @@ class SearchScreen extends StatelessWidget {
                                     viewModel.user!.id,
                                   );
                                 }
+                                if (isMe) {
+                                  return;
+                                }
                                 viewModel.notifyListeners();
                               },
                               child: Container(
@@ -171,21 +176,29 @@ class SearchScreen extends StatelessWidget {
                                         : Colors.pinkAccent,
                                     borderRadius: BorderRadius.circular(10)),
                                 child: Center(
-                                  child: isContains
+                                  child: isMe
                                       ? Text(
-                                          "Unfollow",
-                                          style: GoogleFonts.inter(
-                                            fontSize: 15,
-                                            color: Colors.pinkAccent,
-                                          ),
-                                        )
-                                      : Text(
-                                          "Follow",
+                                          "You",
                                           style: GoogleFonts.inter(
                                             fontSize: 15,
                                             color: Colors.white,
                                           ),
-                                        ),
+                                        )
+                                      : isContains
+                                          ? Text(
+                                              "Unfollow",
+                                              style: GoogleFonts.inter(
+                                                fontSize: 15,
+                                                color: Colors.pinkAccent,
+                                              ),
+                                            )
+                                          : Text(
+                                              "Follow",
+                                              style: GoogleFonts.inter(
+                                                fontSize: 15,
+                                                color: Colors.white,
+                                              ),
+                                            ),
                                 ),
                               ),
                             )
