@@ -47,7 +47,7 @@ class AppwriteServices with ListenableServiceMixin {
     var timeNow = DateTime.now();
     if (cachedData?.videoList != null &&
         cachedData?.timeAdded != null &&
-        timeNow.difference(cachedData!.timeAdded!).inMinutes < 5) {
+        timeNow.difference(cachedData!.timeAdded!).inMinutes < 2) {
       return cachedData!.videoList!;
     }
 
