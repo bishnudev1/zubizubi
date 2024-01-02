@@ -350,4 +350,36 @@ class AppwriteServices with ListenableServiceMixin {
       log(e.toString());
     }
   }
+
+  searchAccountByEmail(String email)async{
+    if (_client == null) {
+      log("Appwrite client got null");
+      null;
+    }
+    final databases = Databases(_client!);
+
+    try {
+      final resp = await databases.listDocuments(
+        databaseId: '658ebf7877a5df4a9f60',
+        collectionId: '658ec36c61220704a694',
+        queries: [Query.equal("email", email)],
+      );
+
+      log("Appwrite documents: $resp");
+
+      final data = resp.documents;
+
+      log("Appwrite video data length: ${data.length}");
+
+      if (data.isNotEmpty) {
+        return data[0];
+      } else {
+        return null;
+      }
+
+    } on AppwriteException catch (e) {
+      log("AppwriteException: $e");
+      return null;
+    }
+  }
 }

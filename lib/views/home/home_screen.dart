@@ -11,6 +11,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:stacked/stacked.dart';
 import 'package:video_player/video_player.dart';
 import 'package:zubizubi/utils/bottom_bar.dart';
+import 'package:zubizubi/views/followers/followers_screen.dart';
 import 'package:zubizubi/views/profile/profile_screen.dart';
 
 import '../../app/routes.dart';
@@ -29,6 +30,7 @@ class ShellScreen extends StatelessWidget {
         HomeLocation(),
         ProfileLocation(),
         SearchLocation(),
+        FollowersLocation()
       ],
     ),
   );
@@ -386,12 +388,13 @@ showCommentSection(BuildContext context, HomeViewModel model, Video video) {
                                                       },
                                                       child: const Text("No")),
                                                   TextButton(
-                                                      onPressed: ()async{
-       await                                                 model.deleteComment(
-                                                            context,
-                                                            video.comments,
-                                                            video.id,
-                                                            data);
+                                                      onPressed: () async {
+                                                        await model
+                                                            .deleteComment(
+                                                                context,
+                                                                video.comments,
+                                                                video.id,
+                                                                data);
                                                         Navigator.pop(context);
                                                         // Navigator.pop(context);
                                                         model.notifyListeners();

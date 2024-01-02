@@ -23,6 +23,7 @@ class UserAdapter extends TypeAdapter<User> {
       followers: (fields[4] as List).cast<dynamic>(),
       shares: (fields[5] as List).cast<dynamic>(),
       createdAt: fields[6] as String,
+      bio: fields[7] as String,
       photoUrl: fields[3] as String,
     );
   }
@@ -30,7 +31,7 @@ class UserAdapter extends TypeAdapter<User> {
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(5)
       ..write(obj.shares)
       ..writeByte(6)
-      ..write(obj.createdAt);
+      ..write(obj.createdAt)
+      ..writeByte(7)
+      ..write(obj.bio);
   }
 
   @override

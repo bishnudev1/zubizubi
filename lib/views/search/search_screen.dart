@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:stacked/stacked.dart';
 import 'package:zubizubi/themes/images.dart';
 import 'package:zubizubi/utils/bottom_bar.dart';
@@ -16,6 +20,7 @@ class SearchScreen extends StatelessWidget {
       viewModelBuilder: () => SearchViewModel(),
       onViewModelReady: (viewModel) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
+          await viewModel.getUser();
           await viewModel.getAllUsers();
         });
       },
@@ -35,24 +40,34 @@ class SearchScreen extends StatelessWidget {
           );
         }
         return Scaffold(
-          appBar: PreferredSize(preferredSize: Size.fromHeight(50), child: CustomAppBar()),
+          appBar: PreferredSize(
+              preferredSize: Size.fromHeight(50), child: CustomAppBar()),
           body: SafeArea(
               child: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             alignment: Alignment.center,
             // padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            decoration:
-                BoxDecoration(image: DecorationImage(image: AssetImage(Images.appBg), fit: BoxFit.cover)),
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage(Images.appBg), fit: BoxFit.cover)),
             child: Column(
               children: [
                 Container(
-                  height: 50,
-                  margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  // height: 40,
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  decoration: BoxDecoration(
+                      color: Colors.black54,
+                      borderRadius: BorderRadius.circular(10)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                   child: TextFormField(
                     controller: viewModel.searchController,
+                    style: GoogleFonts.inter(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
                     onChanged: (value) {
                       if (value.isEmpty) {
                         viewModel.searchList = [];
@@ -72,8 +87,21 @@ class SearchScreen extends StatelessWidget {
                   child: ListView.builder(
                     itemCount: viewModel.searchList.length,
                     itemBuilder: (context, index) {
+                      final userFollowers = viewModel.searchList[index];
+
+                      final myFollowers = viewModel.user?.followers;
+
+                      log("userFollowers: ${userFollowers}");
+                      log("myFollowers: ${myFollowers}");
+
+                      final isContains =
+                          myFollowers!.contains(userFollowers.email);
+
+                      log("isContains: ${isContains}");
+
                       return Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
                         child: Row(
                           children: [
                             Container(
@@ -81,7 +109,8 @@ class SearchScreen extends StatelessWidget {
                               width: 50,
                               decoration: BoxDecoration(
                                   image: DecorationImage(
-                                      image: NetworkImage(viewModel.searchList[index].photoUrl!),
+                                      image: NetworkImage(viewModel
+                                          .searchList[index].photoUrl!),
                                       fit: BoxFit.cover),
                                   color: Colors.grey[200],
                                   borderRadius: BorderRadius.circular(10)),
@@ -89,25 +118,76 @@ class SearchScreen extends StatelessWidget {
                             const SizedBox(
                               width: 10,
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: 10,
-                                  width: 100,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    viewModel.searchList[index].name,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    viewModel.searchList[index].email,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 15,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                log("followUser");
+                                if (isContains) {
+                                  viewModel.unfollowUser(
+                                    viewModel.searchList[index].email,
+                                    viewModel.user!.followers,
+                                    viewModel.user!.id,
+                                  );
+                                } else {
+                                  viewModel.followUser(
+                                    viewModel.searchList[index].email,
+                                    viewModel.user!.followers,
+                                    viewModel.user!.id,
+                                  );
+                                }
+                                viewModel.notifyListeners();
+                              },
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                height: 30,
+                                // width: 80,
+                                decoration: BoxDecoration(
+                                    color: isContains
+                                        ? Colors.white
+                                        : Colors.pinkAccent,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Center(
+                                  child: isContains
+                                      ? Text(
+                                          "Unfollow",
+                                          style: GoogleFonts.inter(
+                                            fontSize: 15,
+                                            color: Colors.pinkAccent,
+                                          ),
+                                        )
+                                      : Text(
+                                          "Follow",
+                                          style: GoogleFonts.inter(
+                                            fontSize: 15,
+                                            color: Colors.white,
+                                          ),
+                                        ),
                                 ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Container(
-                                  height: 10,
-                                  width: 100,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
-                                ),
-                              ],
+                              ),
                             )
                           ],
                         ),

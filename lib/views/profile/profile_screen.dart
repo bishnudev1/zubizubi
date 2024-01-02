@@ -13,8 +13,10 @@ import '../../utils/bottom_bar.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  // BeamerDelegate? _beamerDelegate;
   @override
   Widget build(BuildContext context) {
+
     return ViewModelBuilder.reactive(
       viewModelBuilder: () => ProfileViewModel(),
       onViewModelReady: (viewModel) {
@@ -92,9 +94,21 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    "${viewModel.user?.name ?? ""}",
-                    style: GoogleFonts.lato(fontSize: 18, color: Colors.white),
+                  child: Row(
+                    children: [
+                      Text(
+                        "${viewModel.user?.name ?? ""}",
+                        style: GoogleFonts.lato(fontSize: 18, color: Colors.white),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Icon(
+                        Icons.verified,
+                        color: Colors.white,
+                        size: 15,
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(
@@ -112,9 +126,27 @@ class ProfileScreen extends StatelessWidget {
                 // ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    "I make reels for fun :)",
-                    style: GoogleFonts.lato(fontSize: 16, color: Colors.white),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "${viewModel.user?.bio ?? ""}",
+                        style: GoogleFonts.lato(fontSize: 16, color: Colors.white),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          viewModel.editBio(context);
+                        },
+                        child: Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                          size: 15,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(
@@ -126,9 +158,16 @@ class ProfileScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Followers: ${viewModel.user?.followers.length ?? 0}",
-                        style: GoogleFonts.lato(fontSize: 16, color: Colors.white),
+                      GestureDetector(
+                        onTap: () {
+                          // Beamer.of(context).beamToNamed('/followers');
+                          // viewModel.goToFollowersScreen();
+                          // _beamerDelegate!.beamToNamed('/followers');
+                        },
+                        child: Text(
+                          "Followers: ${viewModel.user?.followers.length ?? 0}",
+                          style: GoogleFonts.lato(fontSize: 16, color: Colors.white),
+                        ),
                       ),
                       SizedBox(
                         width: 15,

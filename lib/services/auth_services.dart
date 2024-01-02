@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:appwrite/appwrite.dart';
@@ -9,7 +10,7 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:zubizubi/app/app.locator.dart';
 import 'package:zubizubi/app/routes.dart';
-import 'package:zubizubi/data/models/user.dart';
+import 'package:zubizubi/data/models/user.dart' as UserModel;
 import 'package:zubizubi/utils/toast.dart';
 
 class AuthServices with ListenableServiceMixin {
@@ -53,10 +54,10 @@ class AuthServices with ListenableServiceMixin {
 //     }
   }
 
-  checkHiveStatus() async {
-    var userBox = Hive.box<User>('userBox');
-    log("user in hive with check: ${userBox}");
-  }
+  // checkHiveStatus() async {
+  //   var userBox = Hive.box<User>('userBox');
+  //   log("user in hive with check: ${userBox}");
+  // }
 
   handleGoogleLogin(BuildContext context) async {
     if (client == null) {
@@ -64,12 +65,14 @@ class AuthServices with ListenableServiceMixin {
       return;
     }
     try {
-      var userBox = Hive.box<User>('userBox');
+      var userBox = Hive.box<UserModel.User>('userBox');
       final account = Account(client);
 
       await account.createOAuth2Session(provider: 'google');
 
       final res = await account.get();
+
+      log("res: ${res.email.toString()}");
 
       final databases = Databases(client);
 
@@ -78,7 +81,7 @@ class AuthServices with ListenableServiceMixin {
           collectionId: "658ec36c61220704a694",
           queries: [Query.equal("email", res.email)]);
 
-      log("isExist: ${isExist.documents[0].data["id"]}");
+      // log("isExist: ${isExist.documents[0].data["id"]}");
 
       if (isExist.documents.isEmpty) {
         final documentId = DateTime.now().millisecondsSinceEpoch.toString();
@@ -90,9 +93,10 @@ class AuthServices with ListenableServiceMixin {
             "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png";
         final followers = [];
         final shares = [];
+        final bio = "I am a Zubizubi User";
         final createdAt = DateTime.now().millisecondsSinceEpoch.toString();
 
-        final user = User.fromMap(
+        final user = UserModel.User.fromMap(
           {
             "id": id,
             "name": name,
@@ -100,6 +104,7 @@ class AuthServices with ListenableServiceMixin {
             "photoUrl": photoUrl,
             "followers": followers,
             "shares": shares,
+            "bio": bio,
             "createdAt": createdAt,
           },
         );
@@ -125,10 +130,11 @@ class AuthServices with ListenableServiceMixin {
         final email = isExist.documents[0].data["email"];
         final photoUrl = isExist.documents[0].data["photoUrl"];
         final followers = isExist.documents[0].data["followers"];
+        final bio = isExist.documents[0].data["bio"];
         final shares = isExist.documents[0].data["shares"];
         final createdAt = isExist.documents[0].data["createdAt"];
 
-        final newUser = User.fromMap(
+        final newUser = UserModel.User.fromMap(
           {
             "id": id,
             "name": name,
@@ -136,6 +142,7 @@ class AuthServices with ListenableServiceMixin {
             "photoUrl": photoUrl,
             "followers": followers,
             "shares": shares,
+            "bio": bio,
             "createdAt": createdAt,
           },
         );
@@ -145,7 +152,7 @@ class AuthServices with ListenableServiceMixin {
         await userBox.clear();
         await userBox.add(newUser);
 
-        log("user in hive again: ${userBox.getAt(0)?.name}");
+        // log("user in hive again: ${userBox.getAt(0)?.name}");
 
         showToast("Welcome ${res.name}");
         notifyListeners();
@@ -204,8 +211,8 @@ class AuthServices with ListenableServiceMixin {
 
   getLocalUser() async {
     try {
-      var userBox = Hive.box<User>('userBox');
-      User? user = userBox.getAt(0);
+      var userBox = Hive.box<UserModel.User>('userBox');
+      UserModel.User? user = userBox.getAt(0);
       log("user in hive: ${user?.name}");
       return user;
     } on PlatformException catch (e) {
@@ -223,7 +230,7 @@ class AuthServices with ListenableServiceMixin {
       return;
     }
     try {
-      var userBox = Hive.box<User>('userBox');
+      var userBox = Hive.box<UserModel.User>('userBox');
       final account = Account(client);
       final res = await account.get();
 
@@ -246,7 +253,7 @@ class AuthServices with ListenableServiceMixin {
 
       await userBox.put(
           0,
-          User.fromMap(
+          UserModel.User.fromMap(
             {
               "id": getUser.documents[0].data["id"],
               "name": getUser.documents[0].data["name"],
@@ -254,6 +261,7 @@ class AuthServices with ListenableServiceMixin {
               "photoUrl": "https://www.dpforwhatsapp.in/img/no-dp/19.webp",
               "followers": getUser.documents[0].data["followers"],
               "shares": getUser.documents[0].data["shares"],
+              "bio": getUser.documents[0].data["bio"],
               "createdAt": getUser.documents[0].data["createdAt"],
             },
           ));
@@ -281,7 +289,7 @@ class AuthServices with ListenableServiceMixin {
       return;
     }
     try {
-      var userBox = Hive.box<User>('userBox');
+      var userBox = Hive.box<UserModel.User>('userBox');
       final account = Account(client);
       final res = await account.get();
 
@@ -321,13 +329,14 @@ class AuthServices with ListenableServiceMixin {
 
       await userBox.put(
           0,
-          User.fromMap(
+          UserModel.User.fromMap(
             {
               "id": getUser.documents[0].data["id"],
               "name": getUser.documents[0].data["name"],
               "email": getUser.documents[0].data["email"],
               "photoUrl": imageurl,
               "followers": getUser.documents[0].data["followers"],
+              "bio": getUser.documents[0].data["bio"],
               "shares": getUser.documents[0].data["shares"],
               "createdAt": getUser.documents[0].data["createdAt"],
             },
@@ -356,8 +365,10 @@ class AuthServices with ListenableServiceMixin {
       return;
     }
     try {
+      final userBox = Hive.box<UserModel.User>('userBox');
       final account = Account(client);
       account.deleteSession(sessionId: 'current');
+      userBox.clear();
       showToast("Logout Successful");
       notifyListeners();
     } on PlatformException catch (e) {
@@ -410,6 +421,165 @@ class AuthServices with ListenableServiceMixin {
           collectionId: "658ec36c61220704a694");
       log("isExist: ${isExist.documents.length}");
       return isExist.documents;
+    } on PlatformException catch (e) {
+      log(e.toString());
+    } on AppwriteException catch (e) {
+      log(e.toString());
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  followUser(String email, List followers, String id) async {
+    if (client == null) {
+      showToast("Appwrite Client Initialization Failed");
+      return null;
+    }
+    final userBox = Hive.box<UserModel.User>('userBox');
+    try {
+      final databases = Databases(client);
+
+      followers.add(email);
+      notifyListeners();
+
+      userBox.put(
+          0,
+          UserModel.User.fromMap(
+            {
+              "id": userBox.getAt(0)?.id,
+              "name": userBox.getAt(0)?.name,
+              "email": userBox.getAt(0)?.email,
+              "photoUrl": userBox.getAt(0)?.photoUrl,
+              "followers": followers,
+              "bio": userBox.getAt(0)?.bio,
+              "shares": userBox.getAt(0)?.shares,
+              "createdAt": userBox.getAt(0)?.createdAt,
+            },
+          ));
+
+      // userBox.put(
+      //     0,
+      //     UserModel.User.fromMap({"followers": followers}).toMap()
+      //         as UserModel.User);
+      // notifyListeners();
+
+      await databases.updateDocument(
+          documentId: id,
+          databaseId: "658ebf7877a5df4a9f60",
+          collectionId: "658ec36c61220704a694",
+          data: {"followers": followers});
+    } on PlatformException catch (e) {
+      log(e.toString());
+    } on AppwriteException catch (e) {
+      log(e.toString());
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  unfollowUser(String email, List followers, String id) async {
+    if (client == null) {
+      showToast("Appwrite Client Initialization Failed");
+      return null;
+    }
+    final userBox = Hive.box<UserModel.User>('userBox');
+    try {
+      final databases = Databases(client);
+
+      followers.remove(email);
+      notifyListeners();
+
+      userBox.put(
+          0,
+          UserModel.User.fromMap(
+            {
+              "id": userBox.getAt(0)?.id,
+              "name": userBox.getAt(0)?.name,
+              "email": userBox.getAt(0)?.email,
+              "photoUrl": userBox.getAt(0)?.photoUrl,
+              "followers": followers,
+              "bio": userBox.getAt(0)?.bio,
+              "shares": userBox.getAt(0)?.shares,
+              "createdAt": userBox.getAt(0)?.createdAt,
+            },
+          ));
+
+      // userBox.put(
+      //     0,
+      //     UserModel.User.fromMap({"followers": followers}).toMap()
+      //         as UserModel.User);
+      // notifyListeners();
+
+      await databases.updateDocument(
+          documentId: id,
+          databaseId: "658ebf7877a5df4a9f60",
+          collectionId: "658ec36c61220704a694",
+          data: {"followers": followers});
+    } on PlatformException catch (e) {
+      log(e.toString());
+    } on AppwriteException catch (e) {
+      log(e.toString());
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  getAllUserFollowers(String email) async {
+    if (client == null) {
+      showToast("Appwrite Client Initialization Failed");
+      return null;
+    }
+    try {
+      final databases = Databases(client);
+
+      final isExist = await databases.listDocuments(
+          databaseId: "658ebf7877a5df4a9f60",
+          collectionId: "658ec36c61220704a694",
+          queries: [Query.equal("email", email)]);
+
+      log("isExist: ${isExist.documents.length}");
+      var user = isExist.documents[0].data;
+
+      return user["followers"];
+    } on PlatformException catch (e) {
+      log(e.toString());
+    } on AppwriteException catch (e) {
+      log(e.toString());
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  editProfileBio(String bio, String userId) async {
+    if (client == null) {
+      showToast("Appwrite Client Initialization Failed");
+      return null;
+    }
+    try {
+      final userBox = Hive.box<UserModel.User>('userBox');
+      final databases = Databases(client);
+
+      userBox.put(
+          0,
+          UserModel.User.fromMap(
+            {
+              "id": userBox.getAt(0)?.id,
+              "name": userBox.getAt(0)?.name,
+              "email": userBox.getAt(0)?.email,
+              "photoUrl": userBox.getAt(0)?.photoUrl,
+              "followers": userBox.getAt(0)?.followers,
+              "bio": bio,
+              "shares": userBox.getAt(0)?.shares,
+              "createdAt": userBox.getAt(0)?.createdAt,
+            },
+          ));
+      notifyListeners();
+
+      await databases.updateDocument(
+          documentId: userId,
+          databaseId: "658ebf7877a5df4a9f60",
+          collectionId: "658ec36c61220704a694",
+          data: {"bio": bio});
     } on PlatformException catch (e) {
       log(e.toString());
     } on AppwriteException catch (e) {

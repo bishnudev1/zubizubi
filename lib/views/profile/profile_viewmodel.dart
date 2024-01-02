@@ -4,14 +4,17 @@ import 'dart:io';
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stacked/stacked.dart';
 import 'package:zubizubi/app/app.locator.dart';
+import 'package:zubizubi/app/routes.dart';
 import 'package:zubizubi/services/auth_services.dart';
 import 'package:appwrite/models.dart' as UserModel;
 import 'package:zubizubi/services/video_services.dart';
 import 'package:zubizubi/utils/alertbox.dart';
+import 'package:zubizubi/utils/toast.dart';
 
 import '../../data/models/user.dart';
 import '../../data/models/video.dart';
@@ -21,6 +24,8 @@ class ProfileViewModel extends ReactiveViewModel {
   final _videoServices = locator<VideoServices>();
   User? _user;
   final imagePicker = ImagePicker();
+
+  TextEditingController bioController = TextEditingController();
 
   List<Video> userVideos = [];
 
@@ -55,6 +60,10 @@ class ProfileViewModel extends ReactiveViewModel {
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  goToFollowersScreen() {
+    routerDelegate.beamToNamed('/followers');
   }
 
   getUser() async {
@@ -146,6 +155,72 @@ class ProfileViewModel extends ReactiveViewModel {
             onFirstPressed: () async {
               _authServices.logoutUser(context);
             });
+      },
+    );
+  }
+
+  editBio(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.transparent,
+          title: Text("Edit Bio"),
+          content: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              border: Border.all(color: Colors.white, width: 1),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: TextFormField(
+              style: TextStyle(color: Colors.white),
+              controller: bioController,
+              decoration: InputDecoration(
+                hintText: user?.bio ?? "Add Bio",
+                hintStyle: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                "Cancel",
+                style: GoogleFonts.aDLaMDisplay(color: Colors.white),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                try {
+                  if (bioController.text.isNotEmpty) {
+                    await _authServices.editProfileBio(
+                        bioController.text, user!.id);
+                    getUser();
+                    notifyListeners();
+                    Navigator.pop(context);
+                  } else {
+                    showToast("Bio cannot be empty");
+                  }
+                } on PlatformException catch (e) {
+                  log(e.toString());
+                } on AppwriteException catch (e) {
+                  log(e.toString());
+                } catch (e) {
+                  log(e.toString());
+                } finally {
+                  // Navigator.pop(context);
+                }
+              },
+              child: Text(
+                "Save",
+                style: GoogleFonts.aDLaMDisplay(color: Colors.white),
+              ),
+            ),
+          ],
+        );
       },
     );
   }

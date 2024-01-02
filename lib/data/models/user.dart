@@ -24,6 +24,9 @@ class User extends HiveObject {
   @HiveField(6)
   String createdAt;
 
+  @HiveField(7)
+  String bio;
+
   User(
       {required this.id,
       required this.name,
@@ -31,6 +34,7 @@ class User extends HiveObject {
       required this.followers,
       required this.shares,
       required this.createdAt,
+      required this.bio,
       required this.photoUrl});
 
   factory User.fromMap(Map<String, dynamic> json) {
@@ -42,6 +46,7 @@ class User extends HiveObject {
       shares: json['shares'],
       createdAt: json['createdAt'],
       photoUrl: json['photoUrl'],
+      bio: json['bio'],
     );
   }
 
@@ -54,6 +59,7 @@ class User extends HiveObject {
       'shares': shares,
       'createdAt': createdAt,
       'photoUrl': photoUrl,
+      'bio': bio,
     };
   }
 }
