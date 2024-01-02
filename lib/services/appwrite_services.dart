@@ -43,21 +43,21 @@ class AppwriteServices with ListenableServiceMixin {
   }
 
   Future<List<Document>> getVideos() async {
-    log("Appwrite cachedData $cachedData ${cachedData?.timeAdded} ${cachedData?.videoList}");
-    var timeNow = DateTime.now();
-    if (cachedData?.videoList != null &&
-        cachedData?.timeAdded != null &&
-        timeNow.difference(cachedData!.timeAdded!).inMinutes < 2) {
-      return cachedData!.videoList!;
-    }
-
-    if (_client == null) {
-      log("Appwrite client got null");
-      null;
-    }
-    final databases = Databases(_client!);
-
     try {
+      log("Appwrite cachedData $cachedData ${cachedData?.timeAdded} ${cachedData?.videoList}");
+      var timeNow = DateTime.now();
+      if (cachedData?.videoList != null &&
+          cachedData?.timeAdded != null &&
+          timeNow.difference(cachedData!.timeAdded!).inMinutes < 2 &&
+          cachedData!.videoList!.isNotEmpty) {
+        return cachedData!.videoList!;
+      }
+
+      if (_client == null) {
+        log("Appwrite client got null");
+      }
+      final databases = Databases(_client!);
+
       final documents = await databases.listDocuments(
         databaseId: '658ebf7877a5df4a9f60',
         collectionId: '658ebf9654ca69759383',
@@ -329,6 +329,7 @@ class AppwriteServices with ListenableServiceMixin {
 
       final getComments = getDocument.data['comments'];
 
+      // local save
       comments.add(jsonEncode({
         "data": {
           "comment": comment,
