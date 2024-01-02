@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ffi';
 import 'dart:io' as IO;
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
@@ -14,9 +15,18 @@ import 'package:zubizubi/utils/toast.dart';
 
 import '../data/models/user.dart' as UserModel;
 
+class CachedData {
+  List<Document>? videoList;
+  DateTime? timeAdded;
+
+  CachedData({this.videoList, this.timeAdded});
+}
+
 class AppwriteServices with ListenableServiceMixin {
   Client? _client;
   String? lastId;
+
+  CachedData? cachedData;
 
   Future<void> init() async {
     _client = Client()
@@ -33,6 +43,14 @@ class AppwriteServices with ListenableServiceMixin {
   }
 
   Future<List<Document>> getVideos() async {
+    log("Appwrite cachedData $cachedData ${cachedData?.timeAdded} ${cachedData?.videoList}");
+    var timeNow = DateTime.now();
+    if (cachedData?.videoList != null &&
+        cachedData?.timeAdded != null &&
+        timeNow.difference(cachedData!.timeAdded!).inMinutes < 5) {
+      return cachedData!.videoList!;
+    }
+
     if (_client == null) {
       log("Appwrite client got null");
       null;
@@ -63,6 +81,8 @@ class AppwriteServices with ListenableServiceMixin {
       }
 
       data.shuffle();
+
+      cachedData = CachedData(videoList: data, timeAdded: DateTime.now());
 
       return data;
     } on AppwriteException catch (e) {
@@ -236,8 +256,7 @@ class AppwriteServices with ListenableServiceMixin {
     final storage = Storage(_client!);
 
     try {
-      await storage.getFileDownload(
-          bucketId: "658ec05b5ecf34a1cea7", fileId: documentId);
+      await storage.getFileDownload(bucketId: "658ec05b5ecf34a1cea7", fileId: documentId);
     } on PlatformException catch (e) {
       showToast(e.message.toString());
       log('PlatformException: $e');
@@ -249,8 +268,7 @@ class AppwriteServices with ListenableServiceMixin {
     }
   }
 
-  deleteComment(
-      BuildContext context, List comments, String id, dynamic comment) async {
+  deleteComment(BuildContext context, List comments, String id, dynamic comment) async {
     try {
       log("deleteComment: $id");
       if (_client == null) {
@@ -280,7 +298,6 @@ class AppwriteServices with ListenableServiceMixin {
             "comments": getComments,
           });
 
-
       // routerDelegate.popBeamLocation();
       notifyListeners();
 
@@ -296,8 +313,7 @@ class AppwriteServices with ListenableServiceMixin {
     }
   }
 
-  addNewComment(BuildContext context, List comments, String id,
-      UserModel.User user, String comment) async {
+  addNewComment(BuildContext context, List comments, String id, UserModel.User user, String comment) async {
     try {
       log("addNewComment: $id");
       if (_client == null) {
@@ -351,7 +367,7 @@ class AppwriteServices with ListenableServiceMixin {
     }
   }
 
-  searchAccountByEmail(String email)async{
+  searchAccountByEmail(String email) async {
     if (_client == null) {
       log("Appwrite client got null");
       null;
@@ -376,7 +392,6 @@ class AppwriteServices with ListenableServiceMixin {
       } else {
         return null;
       }
-
     } on AppwriteException catch (e) {
       log("AppwriteException: $e");
       return null;
