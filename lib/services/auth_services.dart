@@ -383,9 +383,8 @@ class AuthServices with ListenableServiceMixin {
       final account = Account(client);
       account.deleteSession(sessionId: 'current');
       userBox.clear();
-      userBox.put(
-          0,
-          UserModel.User(
+      await userBox.add(
+        UserModel.User(
             id: "12345",
             name: "Guest",
             email: "guest@email.com",
@@ -396,7 +395,8 @@ class AuthServices with ListenableServiceMixin {
             photoUrl:
                 "https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg",
             bio: "I am a guest user",
-          ));
+          )
+      );
       showToast("Logout Successful");
       notifyListeners();
     } on PlatformException catch (e) {
