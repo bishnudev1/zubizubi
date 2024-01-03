@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:collection/collection.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -12,43 +11,41 @@ import 'package:stacked/stacked.dart';
 import 'package:video_player/video_player.dart';
 import 'package:zubizubi/utils/bottom_bar.dart';
 import 'package:zubizubi/utils/toast.dart';
-import 'package:zubizubi/views/followers/followers_screen.dart';
-import 'package:zubizubi/views/profile/profile_screen.dart';
 
 import '../../app/routes.dart';
 import '../../data/models/video.dart';
-import '../../utils/appbar/appbar.dart';
 import 'home_viewmodel.dart';
 
-// class ShellScreen extends StatelessWidget {
-//   ShellScreen({Key? key}) : super(key: key);
+class ShellScreen extends StatelessWidget {
+  ShellScreen({Key? key}) : super(key: key);
 
-//   final _beamerKey = GlobalKey<BeamerState>();
-//   final _routerDelegate = BeamerDelegate(
-//     initialPath: '/home',
-//     locationBuilder: BeamerLocationBuilder(
-//       beamLocations: [
-//         HomeLocation(),
-//         ProfileLocation(),
-//         SearchLocation(),
-//         FollowersLocation()
-//       ],
-//     ),
-//   );
+  final _beamerKey = GlobalKey<BeamerState>();
+  final _routerDelegate = BeamerDelegate(
+    initialPath: '/home',
+    locationBuilder: BeamerLocationBuilder(
+      beamLocations: [
+        HomeLocation(),
+        ProfileLocation(),
+        SearchLocation(),
+        FollowersLocation(),
+        LoginLocation(),
+      ],
+    ),
+  );
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Beamer(
-//         key: _beamerKey,
-//         routerDelegate: _routerDelegate,
-//       ),
-//       bottomNavigationBar: ShellBottomNavigationBar(
-//         beamerKey: _beamerKey,
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Beamer(
+        key: _beamerKey,
+        routerDelegate: _routerDelegate,
+      ),
+      bottomNavigationBar: ShellBottomNavigationBar(
+        beamerKey: _beamerKey,
+      ),
+    );
+  }
+}
 
 class HomeScreen extends StatelessWidget {
   final String? shareUrl;
@@ -87,13 +84,22 @@ class HomeScreen extends StatelessWidget {
             ),
           );
         }
-        return SafeArea(
-          child: Scaffold(
-            backgroundColor: Colors.white,
-            // appBar: PreferredSize(
-            //     preferredSize: Size.fromHeight(50), child: CustomAppBar()),
-            body: SizedBox.expand(child: feedVideos(viewModel)),
-            bottomNavigationBar: const ShellBottomNavigationBar(),
+        return WillPopScope(
+          onWillPop: () {
+            if (viewModel.videoList[viewModel.currentIndex].controller != null) {
+              viewModel.videoList[viewModel.currentIndex].controller?.pause();
+            }
+            log("");
+            return Future.value(true);
+          },
+          child: SafeArea(
+            child: Scaffold(
+              backgroundColor: Colors.white,
+              // appBar: PreferredSize(
+              //     preferredSize: Size.fromHeight(50), child: CustomAppBar()),
+              body: SizedBox.expand(child: feedVideos(viewModel)),
+              // bottomNavigationBar: const ShellBottomNavigationBar(),
+            ),
           ),
         );
       },
@@ -115,13 +121,13 @@ Widget feedVideos(HomeViewModel viewModel) {
     scrollDirection: Axis.vertical,
     itemBuilder: (context, index) {
       index = index % (viewModel.videoList.length);
+      viewModel.currentIndex = index;
       return videoCard(viewModel.videoList[index], viewModel, context, index);
     },
   );
 }
 
-Widget videoCard(
-    Video video, HomeViewModel viewmodel, BuildContext context, int index) {
+Widget videoCard(Video video, HomeViewModel viewmodel, BuildContext context, int index) {
   // viewmodel.checkIsVideoLikedByUser(video);
 
   final isLiked = video.likes.contains(viewmodel.user?.email.toString());
@@ -189,10 +195,7 @@ Widget videoCard(
             const Text(
               "Save",
               style: TextStyle(
-                  fontFamily: "Canela",
-                  fontSize: 14,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600),
+                  fontFamily: "Canela", fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -215,10 +218,7 @@ Widget videoCard(
             const Text(
               "Share",
               style: TextStyle(
-                  fontFamily: "Canela",
-                  fontSize: 14,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600),
+                  fontFamily: "Canela", fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -251,10 +251,7 @@ Widget videoCard(
             Text(
               "${video.likes.length}",
               style: const TextStyle(
-                  fontFamily: "Canela",
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600),
+                  fontFamily: "Canela", fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -277,11 +274,8 @@ Widget videoCard(
             ),
             Text(
               "${video.comments.length}",
-              style: TextStyle(
-                  fontFamily: "Canela",
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600),
+              style: const TextStyle(
+                  fontFamily: "Canela", fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -291,8 +285,7 @@ Widget videoCard(
         bottom: 70,
         child: Text(
           video.creatorName,
-          style: GoogleFonts.zillaSlab(
-              fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
+          style: GoogleFonts.zillaSlab(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
         ),
       ),
       Positioned(
@@ -301,9 +294,7 @@ Widget videoCard(
         child: Text(
           "${video.description} 👻",
           style: GoogleFonts.zillaSlab(
-              fontSize: 15,
-              color: Colors.white.withOpacity(0.7),
-              fontWeight: FontWeight.w600),
+              fontSize: 15, color: Colors.white.withOpacity(0.7), fontWeight: FontWeight.w600),
         ),
       ),
     ],
@@ -320,15 +311,13 @@ showCommentSection(BuildContext context, HomeViewModel model, Video video) {
         return Form(
           key: model.formKey,
           child: Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Container(
                 height: MediaQuery.of(context).size.height * 0.7,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                decoration: const BoxDecoration(
                   color: Colors.white,
-                  borderRadius: const BorderRadius.only(
+                  borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
                   ),
@@ -358,12 +347,12 @@ showCommentSection(BuildContext context, HomeViewModel model, Video video) {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Expanded(
                       child: video.comments.isEmpty
-                          ? Center(
+                          ? const Center(
                               child: Text(
                               "No comments yet",
                               style: TextStyle(
@@ -382,14 +371,12 @@ showCommentSection(BuildContext context, HomeViewModel model, Video video) {
                                       if (model.user!.guest) {
                                         return;
                                       }
-                                      if (data['user']['email'] ==
-                                          model.user?.email) {
+                                      if (data['user']['email'] == model.user?.email) {
                                         showDialog(
                                             context: context,
                                             builder: (context) {
                                               return AlertDialog(
-                                                title: const Text(
-                                                    "Delete Comment"),
+                                                title: const Text("Delete Comment"),
                                                 content: const Text(
                                                     "Are you sure you want to delete this comment?"),
                                                 actions: [
@@ -400,12 +387,8 @@ showCommentSection(BuildContext context, HomeViewModel model, Video video) {
                                                       child: const Text("No")),
                                                   TextButton(
                                                       onPressed: () async {
-                                                        await model
-                                                            .deleteComment(
-                                                                context,
-                                                                video.comments,
-                                                                video.id,
-                                                                data);
+                                                        await model.deleteComment(
+                                                            context, video.comments, video.id, data);
                                                         Navigator.pop(context);
                                                         // Navigator.pop(context);
                                                         model.notifyListeners();
@@ -417,8 +400,7 @@ showCommentSection(BuildContext context, HomeViewModel model, Video video) {
                                       }
                                     },
                                     leading: CircleAvatar(
-                                      backgroundImage: NetworkImage(
-                                          data['user']['photoUrl'].toString()),
+                                      backgroundImage: NetworkImage(data['user']['photoUrl'].toString()),
                                     ),
                                     title: Text(
                                       data['user']['name'].toString(),
@@ -437,8 +419,7 @@ showCommentSection(BuildContext context, HomeViewModel model, Video video) {
                                       ),
                                     ),
                                     trailing: Text(
-                                      data['data']?['createdAt'].toString() ??
-                                          "",
+                                      data['data']?['createdAt'].toString() ?? "",
                                       style: TextStyle(
                                         fontSize: 10,
                                         color: Colors.black.withOpacity(0.7),
@@ -447,7 +428,7 @@ showCommentSection(BuildContext context, HomeViewModel model, Video video) {
                               },
                             ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Row(
@@ -456,7 +437,7 @@ showCommentSection(BuildContext context, HomeViewModel model, Video video) {
                         CircleAvatar(
                           backgroundImage: NetworkImage(model.user!.photoUrl),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
                         Expanded(
@@ -487,11 +468,10 @@ showCommentSection(BuildContext context, HomeViewModel model, Video video) {
                                 return;
                               }
                               if (model.formKey.currentState!.validate()) {
-                                model.addComment(
-                                    context, video.comments, video.id);
+                                model.addComment(context, video.comments, video.id);
                               }
                             },
-                            icon: FaIcon(
+                            icon: const FaIcon(
                               FontAwesomeIcons.solidPaperPlane,
                               color: Colors.black,
                               size: 20,

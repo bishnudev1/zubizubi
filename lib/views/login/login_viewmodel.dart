@@ -5,6 +5,7 @@ import 'package:stacked/stacked.dart';
 import 'package:zubizubi/app/app.locator.dart';
 import 'package:zubizubi/app/routes.dart';
 import 'package:zubizubi/services/auth_services.dart';
+import 'package:zubizubi/utils/toast.dart';
 
 class LoginViewModel extends ReactiveViewModel {
   final _authServices = locator<AuthServices>();
@@ -25,8 +26,12 @@ class LoginViewModel extends ReactiveViewModel {
     notifyListeners();
   }
 
-  continueAsGuest(){
-    routerDelegate.beamToNamed('/home');
+  continueAsGuest() {
+    if (routerDelegate.currentBeamLocation.state.routeInformation.uri.toString().startsWith("/shell")) {
+      log("Current Beam Location: ${routerDelegate.currentBeamLocation.state.routeInformation.uri}");
+      showToast("You are already logged in as a guest!");
+      return;
+    }
+    routerDelegate.beamToNamed('/shell');
   }
-
 }

@@ -12,26 +12,26 @@ import 'package:zubizubi/utils/toast.dart';
 import '../app/app.locator.dart';
 
 class ShellBottomNavigationBar extends StatefulWidget {
-  const ShellBottomNavigationBar({super.key});
+  const ShellBottomNavigationBar({super.key, required this.beamerKey});
 
-  // final GlobalKey<BeamerState> beamerKey;
+  final GlobalKey<BeamerState> beamerKey;
 
   @override
   State<ShellBottomNavigationBar> createState() => _ShellBottomNavigationBarState();
 }
 
 class _ShellBottomNavigationBarState extends State<ShellBottomNavigationBar> {
-  // late BeamerDelegate _beamerDelegate;
+  late BeamerDelegate _beamerDelegate;
   int currentIndex = 0;
 
   void _setStateListener() => setState(() {});
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _beamerDelegate = widget.beamerKey.currentState!.routerDelegate;
-  //   _beamerDelegate.addListener(_setStateListener);
-  // }
+  @override
+  void initState() {
+    super.initState();
+    _beamerDelegate = widget.beamerKey.currentState!.routerDelegate;
+    _beamerDelegate.addListener(_setStateListener);
+  }
 
   final _authServices = locator<AuthServices>();
 
@@ -46,8 +46,6 @@ class _ShellBottomNavigationBarState extends State<ShellBottomNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
-    final currentRoute = ModalRoute.of(context)!.settings.name;
-
     return BottomNavigationBar(
       showSelectedLabels: false,
       showUnselectedLabels: false,
@@ -56,19 +54,18 @@ class _ShellBottomNavigationBarState extends State<ShellBottomNavigationBar> {
       type: BottomNavigationBarType.fixed,
       currentIndex: currentIndex, // Set the current index
       onTap: (index) {
+        if (currentIndex == index) {
+          return;
+        }
         currentIndex = index; // Update the current index
         switch (index) {
           case 0:
             log(index.toString());
-            if (currentRoute != "/home-screen") {
-              routerDelegate.beamToNamed('/home');
-            }
+            _beamerDelegate.beamToNamed('/home');
             break;
           case 1:
             log(index.toString());
-            if (currentRoute != "/search") {
-              routerDelegate.beamToNamed('/search');
-            }
+            _beamerDelegate.beamToNamed('/search');
             break;
           case 2:
             log(index.toString());
@@ -76,7 +73,7 @@ class _ShellBottomNavigationBarState extends State<ShellBottomNavigationBar> {
               uploadVideo();
             } else {
               showToast("You need to be logged In to do that!");
-              routerDelegate.beamToNamed('/login');
+              _beamerDelegate.beamToNamed('/login');
               return;
             }
             break;
@@ -85,9 +82,7 @@ class _ShellBottomNavigationBarState extends State<ShellBottomNavigationBar> {
             break;
           case 4:
             log(index.toString());
-            if (currentRoute != "/profile") {
-              routerDelegate.beamToNamed('/profile');
-            }
+            _beamerDelegate.beamToNamed('/profile');
             break;
         }
       },

@@ -99,12 +99,12 @@ class AuthServices with ListenableServiceMixin {
         final id = documentId;
         final name = res.name;
         final email = res.email;
-        final photoUrl =
+        const photoUrl =
             "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png";
         final followers = [];
         final shares = [];
-        final guest = false;
-        final bio = "I am a Zubizubi User";
+        const guest = false;
+        const bio = "I am a Zubizubi User";
         final createdAt = DateTime.now().millisecondsSinceEpoch.toString();
 
         final user = UserModel.User.fromMap(
@@ -180,7 +180,7 @@ class AuthServices with ListenableServiceMixin {
     } catch (e) {
       log(e.toString());
     } finally {
-      routerDelegate.beamToNamed('/home');
+      routerDelegate.beamToNamed('/shell');
     }
   }
 
@@ -214,9 +214,9 @@ class AuthServices with ListenableServiceMixin {
           queries: [Query.equal("email", res.email)]);
       notifyListeners();
       return currentUser.documents.first.data;
-    } on PlatformException catch (e) {
+    } on PlatformException {
       return null;
-    } on AppwriteException catch (e) {
+    } on AppwriteException {
       return null;
     } catch (e) {
       return null;
@@ -229,9 +229,9 @@ class AuthServices with ListenableServiceMixin {
       UserModel.User? user = userBox.getAt(0);
       log("user in hive: ${user?.name}");
       return user;
-    } on PlatformException catch (e) {
+    } on PlatformException {
       return null;
-    } on AppwriteException catch (e) {
+    } on AppwriteException {
       return null;
     } catch (e) {
       return null;
@@ -312,15 +312,13 @@ class AuthServices with ListenableServiceMixin {
       final imageId = DateTime.now().millisecondsSinceEpoch.toString();
 
       await storage.createFile(
-          bucketId: "658fafe9b0bc0ad6a9c5",
-          fileId: imageId,
-          file: InputFile.fromPath(path: image.path));
+          bucketId: "658fafe9b0bc0ad6a9c5", fileId: imageId, file: InputFile.fromPath(path: image.path));
 
       // final imageurl = await storage.getFilePreview(
       //     bucketId: "658fafe9b0bc0ad6a9c5", fileId: imageId);
 
       final imageurl =
-          "https://appwrite.bishnudevs.in/v1/storage/buckets/658fafe9b0bc0ad6a9c5/files/${imageId}/view?project=658bf6d7d729c67607f5";
+          "https://appwrite.bishnudevs.in/v1/storage/buckets/658fafe9b0bc0ad6a9c5/files/$imageId/view?project=658bf6d7d729c67607f5";
 
       log("imageurl: $imageurl");
 
@@ -394,12 +392,12 @@ class AuthServices with ListenableServiceMixin {
     } catch (e) {
       log(e.toString());
     } finally {
-      Beamer.of(context).beamToNamed('/home');
+      routerDelegate.beamToNamed('/login');
     }
   }
 
   getUserVideos(String creator) async {
-    log("Current Creator Name: ${creator}");
+    log("Current Creator Name: $creator");
     if (client == null) {
       showToast("Appwrite Client Initialization Failed");
       return null;
@@ -431,8 +429,7 @@ class AuthServices with ListenableServiceMixin {
       final databases = Databases(client);
 
       final isExist = await databases.listDocuments(
-          databaseId: "658ebf7877a5df4a9f60",
-          collectionId: "658ec36c61220704a694");
+          databaseId: "658ebf7877a5df4a9f60", collectionId: "658ec36c61220704a694");
       log("isExist: ${isExist.documents.length}");
       return isExist.documents;
     } on PlatformException catch (e) {
@@ -445,7 +442,7 @@ class AuthServices with ListenableServiceMixin {
   }
 
   followUser(String email, List followers, String id) async {
-    log("User id: ${id}");
+    log("User id: $id");
     if (client == null) {
       showToast("Appwrite Client Initialization Failed");
       return null;
@@ -477,7 +474,7 @@ class AuthServices with ListenableServiceMixin {
 
       notifyListeners();
 
-      log("followers is auth: ${followers}");
+      log("followers is auth: $followers");
 
       final resp1 = await databases.updateDocument(
           documentId: id,
@@ -496,7 +493,7 @@ class AuthServices with ListenableServiceMixin {
   }
 
   unfollowUser(String email, List followers, String id) async {
-    log("User id: ${id}");
+    log("User id: $id");
     if (client == null) {
       showToast("Appwrite Client Initialization Failed");
       return null;

@@ -40,28 +40,22 @@ class SearchScreen extends StatelessWidget {
           );
         }
         return Scaffold(
-          appBar: PreferredSize(
-              preferredSize: Size.fromHeight(50), child: CustomAppBar()),
+          appBar: const PreferredSize(preferredSize: Size.fromHeight(50), child: CustomAppBar()),
           body: SafeArea(
               child: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             alignment: Alignment.center,
             // padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(Images.appBg), fit: BoxFit.cover)),
+            decoration: const BoxDecoration(
+                image: DecorationImage(image: AssetImage(Images.appBg), fit: BoxFit.cover)),
             child: Column(
               children: [
                 Container(
                   // height: 40,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(10)),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                  margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  decoration: BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                   child: TextFormField(
                     controller: viewModel.searchController,
                     style: GoogleFonts.inter(
@@ -77,7 +71,7 @@ class SearchScreen extends StatelessWidget {
                         viewModel.notifyListeners();
                       }
                     },
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: "Search a user...",
                         hintStyle: TextStyle(color: Colors.grey)),
@@ -91,19 +85,17 @@ class SearchScreen extends StatelessWidget {
 
                       final myFollowers = viewModel.user?.followers;
 
-                      log("userFollowers: ${userFollowers}");
-                      log("myFollowers: ${myFollowers}");
+                      log("userFollowers: $userFollowers");
+                      log("myFollowers: $myFollowers");
 
-                      final isContains =
-                          myFollowers!.contains(userFollowers.email);
+                      final isContains = myFollowers!.contains(userFollowers.email);
 
                       final isMe = viewModel.user?.email == userFollowers.email;
 
-                      log("isContains: ${isContains}");
+                      log("isContains: $isContains");
 
                       return Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
+                        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         child: Row(
                           children: [
                             Container(
@@ -111,8 +103,7 @@ class SearchScreen extends StatelessWidget {
                               width: 50,
                               decoration: BoxDecoration(
                                   image: DecorationImage(
-                                      image: NetworkImage(viewModel
-                                          .searchList[index].photoUrl!),
+                                      image: NetworkImage(viewModel.searchList[index].photoUrl),
                                       fit: BoxFit.cover),
                                   color: Colors.grey[200],
                                   borderRadius: BorderRadius.circular(10)),
@@ -141,7 +132,7 @@ class SearchScreen extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 5,
                             ),
                             GestureDetector(
@@ -166,14 +157,11 @@ class SearchScreen extends StatelessWidget {
                                 viewModel.notifyListeners();
                               },
                               child: Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
                                 height: 30,
                                 // width: 80,
                                 decoration: BoxDecoration(
-                                    color: isContains
-                                        ? Colors.white
-                                        : Colors.pinkAccent,
+                                    color: isContains ? Colors.white : Colors.pinkAccent,
                                     borderRadius: BorderRadius.circular(10)),
                                 child: Center(
                                   child: isMe
@@ -211,7 +199,7 @@ class SearchScreen extends StatelessWidget {
               ],
             ),
           )),
-          bottomNavigationBar: const ShellBottomNavigationBar(),
+          //   bottomNavigationBar: const ShellBottomNavigationBar(),
         );
       },
     );

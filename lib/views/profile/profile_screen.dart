@@ -16,7 +16,6 @@ class ProfileScreen extends StatelessWidget {
   // BeamerDelegate? _beamerDelegate;
   @override
   Widget build(BuildContext context) {
-
     return ViewModelBuilder.reactive(
       viewModelBuilder: () => ProfileViewModel(),
       onViewModelReady: (viewModel) {
@@ -251,7 +250,9 @@ class ProfileScreen extends StatelessWidget {
                         onTap: () {
                           // Beamer.of(context)
                           //     .beamToNamed('/share', data: {'shareUrl': viewModel.userVideos[index].videoUrl});
-                          routerDelegate.beamToNamed('/share?url=${viewModel.userVideos[index].videoUrl}',);
+                          routerDelegate.beamToNamed(
+                            '/share?url=${viewModel.userVideos[index].videoUrl}',
+                          );
                         },
                         child: Container(
                             decoration: BoxDecoration(
@@ -270,7 +271,7 @@ class ProfileScreen extends StatelessWidget {
               ],
             ),
           )),
-          bottomNavigationBar: const ShellBottomNavigationBar(),
+          //   bottomNavigationBar: const ShellBottomNavigationBar(),
         );
       },
     );
