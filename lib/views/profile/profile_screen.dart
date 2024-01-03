@@ -270,6 +270,7 @@ class ProfileScreen extends StatelessWidget {
               ],
             ),
           )),
+          bottomNavigationBar: const ShellBottomNavigationBar(),
         );
       },
     );

@@ -21,6 +21,16 @@ class AuthServices with ListenableServiceMixin {
       .setProject('658bf6d7d729c67607f5')
       .setSelfSigned(status: true);
 
+  bool isSignedIn() {
+    final userBox = Hive.box<UserModel.User>('userBox');
+
+    if (userBox.isEmpty) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   handleFacebookLogin() async {
     if (client == null) {
       showToast("Appwrite Client Initialization Failed");
@@ -93,6 +103,7 @@ class AuthServices with ListenableServiceMixin {
             "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png";
         final followers = [];
         final shares = [];
+        final guest = false;
         final bio = "I am a Zubizubi User";
         final createdAt = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -103,6 +114,7 @@ class AuthServices with ListenableServiceMixin {
             "email": email,
             "photoUrl": photoUrl,
             "followers": followers,
+            "guest": guest,
             "shares": shares,
             "bio": bio,
             "createdAt": createdAt,
@@ -130,6 +142,7 @@ class AuthServices with ListenableServiceMixin {
         final email = isExist.documents[0].data["email"];
         final photoUrl = isExist.documents[0].data["photoUrl"];
         final followers = isExist.documents[0].data["followers"];
+        final guest = isExist.documents[0].data["guest"];
         final bio = isExist.documents[0].data["bio"];
         final shares = isExist.documents[0].data["shares"];
         final createdAt = isExist.documents[0].data["createdAt"];
@@ -141,6 +154,7 @@ class AuthServices with ListenableServiceMixin {
             "email": email,
             "photoUrl": photoUrl,
             "followers": followers,
+            "guest": guest,
             "shares": shares,
             "bio": bio,
             "createdAt": createdAt,
@@ -166,7 +180,7 @@ class AuthServices with ListenableServiceMixin {
     } catch (e) {
       log(e.toString());
     } finally {
-      routerDelegate.beamToNamed('/shell');
+      routerDelegate.beamToNamed('/home');
     }
   }
 
@@ -380,7 +394,7 @@ class AuthServices with ListenableServiceMixin {
     } catch (e) {
       log(e.toString());
     } finally {
-      Beamer.of(context).beamToNamed('/login');
+      Beamer.of(context).beamToNamed('/home');
     }
   }
 

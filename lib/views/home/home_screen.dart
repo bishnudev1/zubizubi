@@ -11,6 +11,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:stacked/stacked.dart';
 import 'package:video_player/video_player.dart';
 import 'package:zubizubi/utils/bottom_bar.dart';
+import 'package:zubizubi/utils/toast.dart';
 import 'package:zubizubi/views/followers/followers_screen.dart';
 import 'package:zubizubi/views/profile/profile_screen.dart';
 
@@ -19,35 +20,35 @@ import '../../data/models/video.dart';
 import '../../utils/appbar/appbar.dart';
 import 'home_viewmodel.dart';
 
-class ShellScreen extends StatelessWidget {
-  ShellScreen({Key? key}) : super(key: key);
+// class ShellScreen extends StatelessWidget {
+//   ShellScreen({Key? key}) : super(key: key);
 
-  final _beamerKey = GlobalKey<BeamerState>();
-  final _routerDelegate = BeamerDelegate(
-    initialPath: '/home',
-    locationBuilder: BeamerLocationBuilder(
-      beamLocations: [
-        HomeLocation(),
-        ProfileLocation(),
-        SearchLocation(),
-        FollowersLocation()
-      ],
-    ),
-  );
+//   final _beamerKey = GlobalKey<BeamerState>();
+//   final _routerDelegate = BeamerDelegate(
+//     initialPath: '/home',
+//     locationBuilder: BeamerLocationBuilder(
+//       beamLocations: [
+//         HomeLocation(),
+//         ProfileLocation(),
+//         SearchLocation(),
+//         FollowersLocation()
+//       ],
+//     ),
+//   );
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Beamer(
-        key: _beamerKey,
-        routerDelegate: _routerDelegate,
-      ),
-      bottomNavigationBar: ShellBottomNavigationBar(
-        beamerKey: _beamerKey,
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Beamer(
+//         key: _beamerKey,
+//         routerDelegate: _routerDelegate,
+//       ),
+//       bottomNavigationBar: ShellBottomNavigationBar(
+//         beamerKey: _beamerKey,
+//       ),
+//     );
+//   }
+// }
 
 class HomeScreen extends StatelessWidget {
   final String? shareUrl;
@@ -92,6 +93,7 @@ class HomeScreen extends StatelessWidget {
             // appBar: PreferredSize(
             //     preferredSize: Size.fromHeight(50), child: CustomAppBar()),
             body: SizedBox.expand(child: feedVideos(viewModel)),
+            bottomNavigationBar: const ShellBottomNavigationBar(),
           ),
         );
       },
@@ -228,10 +230,15 @@ Widget videoCard(
           children: [
             IconButton(
               onPressed: () async {
-                await viewmodel.addLike(video.id, index);
-                viewmodel.notifyListeners();
+                if (viewmodel.user!.guest) {
+                  showToast("Please login to comment");
+                  return;
+                }
                 if (isLiked) {
                   await viewmodel.removeLike(video.id, index);
+                } else {
+                  await viewmodel.addLike(video.id, index);
+                  viewmodel.notifyListeners();
                 }
               },
               icon: FaIcon(
@@ -371,6 +378,9 @@ showCommentSection(BuildContext context, HomeViewModel model, Video video) {
                                 log("data: $data");
                                 return ListTile(
                                     onLongPress: () {
+                                      if (model.user!.guest) {
+                                        return;
+                                      }
                                       if (data['user']['email'] ==
                                           model.user?.email) {
                                         showDialog(
@@ -470,6 +480,10 @@ showCommentSection(BuildContext context, HomeViewModel model, Video video) {
                         ),
                         IconButton(
                             onPressed: () {
+                              if (model.user!.guest) {
+                                showToast("Please login to comment");
+                                return;
+                              }
                               if (model.formKey.currentState!.validate()) {
                                 model.addComment(
                                     context, video.comments, video.id);

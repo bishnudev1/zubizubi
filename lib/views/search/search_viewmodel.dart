@@ -39,6 +39,7 @@ class SearchViewModel extends ReactiveViewModel {
                   createdAt: e['createdAt'],
                   photoUrl: e['photoUrl'],
                   bio: e['bio'],
+                  guest: e['guest'],
                 ))
             .toList();
         userList.addAll(users.cast<User>());

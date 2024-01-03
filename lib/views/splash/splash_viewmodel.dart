@@ -29,12 +29,13 @@ class SplashViewModel extends ReactiveViewModel {
         log("SPlash Screen Current User: $currentUser");
 
         log("Current User: $currentUser");
+        Beamer.of(context).beamToNamed('/home');
 
-        if (currentUser == null) {
-          Beamer.of(context).beamToNamed('/login');
-        } else {
-          Beamer.of(context).beamToNamed('/shell');
-        }
+        // if (currentUser == null) {
+        //   Beamer.of(context).beamToNamed('/login');
+        // } else {
+        //   Beamer.of(context).beamToNamed('/home');
+        // }
       });
     }
   }

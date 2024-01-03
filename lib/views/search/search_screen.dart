@@ -211,6 +211,7 @@ class SearchScreen extends StatelessWidget {
               ],
             ),
           )),
+          bottomNavigationBar: const ShellBottomNavigationBar(),
         );
       },
     );

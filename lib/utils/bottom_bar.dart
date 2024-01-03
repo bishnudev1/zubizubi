@@ -5,30 +5,31 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:zubizubi/app/routes.dart';
 import 'package:zubizubi/services/video_services.dart';
 import '../app/app.locator.dart';
 
 class ShellBottomNavigationBar extends StatefulWidget {
-  const ShellBottomNavigationBar({super.key, required this.beamerKey});
+  const ShellBottomNavigationBar({super.key});
 
-  final GlobalKey<BeamerState> beamerKey;
+  // final GlobalKey<BeamerState> beamerKey;
 
   @override
   State<ShellBottomNavigationBar> createState() => _ShellBottomNavigationBarState();
 }
 
 class _ShellBottomNavigationBarState extends State<ShellBottomNavigationBar> {
-  late BeamerDelegate _beamerDelegate;
+  // late BeamerDelegate _beamerDelegate;
   int currentIndex = 0;
 
   void _setStateListener() => setState(() {});
 
-  @override
-  void initState() {
-    super.initState();
-    _beamerDelegate = widget.beamerKey.currentState!.routerDelegate;
-    _beamerDelegate.addListener(_setStateListener);
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _beamerDelegate = widget.beamerKey.currentState!.routerDelegate;
+  //   _beamerDelegate.addListener(_setStateListener);
+  // }
 
   uploadVideo() async {
     final videoPicker = ImagePicker();
@@ -56,13 +57,13 @@ class _ShellBottomNavigationBarState extends State<ShellBottomNavigationBar> {
           case 0:
             log(index.toString());
             if (currentRoute != "/home-screen") {
-              _beamerDelegate.beamToNamed('/home');
+              routerDelegate.beamToNamed('/home');
             }
             break;
           case 1:
             log(index.toString());
             if (currentRoute != "/search") {
-              _beamerDelegate.beamToNamed('/search');
+              routerDelegate.beamToNamed('/search');
             }
             break;
           case 2:
@@ -75,7 +76,7 @@ class _ShellBottomNavigationBarState extends State<ShellBottomNavigationBar> {
           case 4:
             log(index.toString());
             if (currentRoute != "/profile") {
-              _beamerDelegate.beamToNamed('/profile');
+              routerDelegate.beamToNamed('/profile');
             }
             break;
         }

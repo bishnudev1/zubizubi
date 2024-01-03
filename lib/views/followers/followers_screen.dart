@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stacked/stacked.dart';
 import 'package:zubizubi/themes/images.dart';
+import 'package:zubizubi/utils/bottom_bar.dart';
 import 'package:zubizubi/views/followers/followers_viewmodel.dart';
 
 import '../../utils/appbar/appbar.dart';
@@ -71,6 +72,7 @@ class FollowersScreen extends StatelessWidget {
               ),
             ),
           ),
+          bottomNavigationBar: const ShellBottomNavigationBar(),
         );
       },
     );
