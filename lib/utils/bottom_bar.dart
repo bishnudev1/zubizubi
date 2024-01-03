@@ -83,6 +83,9 @@ class _ShellBottomNavigationBarState extends State<ShellBottomNavigationBar> {
             break;
           case 3:
             log(index.toString());
+            if (currentRoute != "/chats") {
+              routerDelegate.beamToNamed('/chats');
+            }
             break;
           case 4:
             log(index.toString());
@@ -119,7 +122,7 @@ class _ShellBottomNavigationBarState extends State<ShellBottomNavigationBar> {
         ),
         BottomNavigationBarItem(
           icon: FaIcon(
-            FontAwesomeIcons.video,
+            FontAwesomeIcons.facebookMessenger,
             color: Colors.white,
             size: 21,
           ),

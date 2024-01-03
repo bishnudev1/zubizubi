@@ -2,8 +2,12 @@ import 'dart:developer';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:zubizubi/app/app.locator.dart';
+import 'package:zubizubi/data/models/chat.dart';
+import 'package:zubizubi/data/models/user.dart';
 import 'package:zubizubi/services/auth_services.dart';
 import 'package:zubizubi/utils/toast.dart';
+import 'package:zubizubi/views/chats/chats_screen.dart';
+import 'package:zubizubi/views/chats/room/room_screen.dart';
 import 'package:zubizubi/views/followers/followers_screen.dart';
 import 'package:zubizubi/views/home/home_screen.dart';
 import 'package:zubizubi/views/login/login_screen.dart';
@@ -19,7 +23,7 @@ BeamGuard authGuard = BeamGuard(
   pathPatterns: ["/profile", "/search", "/followers"],
   check: ((context, location) {
     final isAuth = _authServices.isSignedIn();
-    if(!isAuth){
+    if (!isAuth) {
       showToast("You need to be logged In to do that!");
     }
     return isAuth;
@@ -39,6 +43,9 @@ final routerDelegate = BeamerDelegate(
       '/followers': (context, state, data) => const FollowersScreen(),
       '/profile': (context, state, data) => const ProfileScreen(),
       '/search': (context, state, data) => const SearchScreen(),
+      '/chats': (context, state, data) => const ChatsScreen(),
+      '/room': (context, state, data) =>
+          RoomScreen(receiver: data as Map<String, dynamic>),
       '/share': (context, state, data) {
         log("state.uri: ${state.uri}");
         // Use BeamPage to define custom behavior
