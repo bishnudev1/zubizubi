@@ -161,7 +161,7 @@ class ProfileScreen extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           // Beamer.of(context).beamToNamed('/followers');
-                          viewModel.goToFollowersScreen();
+                          // viewModel.goToFollowersScreen();
                           // _beamerDelegate!.beamToNamed('/followers');
                         },
                         child: Text(
