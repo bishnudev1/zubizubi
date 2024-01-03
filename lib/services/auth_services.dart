@@ -445,6 +445,7 @@ class AuthServices with ListenableServiceMixin {
   }
 
   followUser(String email, List followers, String id) async {
+    log("User id: ${id}");
     if (client == null) {
       showToast("Appwrite Client Initialization Failed");
       return null;
@@ -456,32 +457,35 @@ class AuthServices with ListenableServiceMixin {
       followers.add(email);
       notifyListeners();
 
-      userBox.put(
-          0,
-          UserModel.User.fromMap(
-            {
-              "id": userBox.getAt(0)?.id,
-              "name": userBox.getAt(0)?.name,
-              "email": userBox.getAt(0)?.email,
-              "photoUrl": userBox.getAt(0)?.photoUrl,
-              "followers": followers,
-              "bio": userBox.getAt(0)?.bio,
-              "shares": userBox.getAt(0)?.shares,
-              "createdAt": userBox.getAt(0)?.createdAt,
-            },
-          ));
+      final newUser = UserModel.User.fromMap(
+        {
+          "id": userBox.getAt(0)?.id,
+          "name": userBox.getAt(0)?.name,
+          "email": userBox.getAt(0)?.email,
+          "photoUrl": userBox.getAt(0)?.photoUrl,
+          "followers": followers,
+          "guest": userBox.getAt(0)?.guest,
+          "bio": userBox.getAt(0)?.bio,
+          "shares": userBox.getAt(0)?.shares,
+          "createdAt": userBox.getAt(0)?.createdAt,
+        },
+      );
 
-      // userBox.put(
-      //     0,
-      //     UserModel.User.fromMap({"followers": followers}).toMap()
-      //         as UserModel.User);
-      // notifyListeners();
+      log("newUser: ${newUser.name}");
 
-      await databases.updateDocument(
+      userBox.put(0, newUser);
+
+      notifyListeners();
+
+      log("followers is auth: ${followers}");
+
+      final resp1 = await databases.updateDocument(
           documentId: id,
           databaseId: "658ebf7877a5df4a9f60",
           collectionId: "658ec36c61220704a694",
           data: {"followers": followers});
+
+      log("resp1: ${resp1.toString()}");
     } on PlatformException catch (e) {
       log(e.toString());
     } on AppwriteException catch (e) {
@@ -492,6 +496,7 @@ class AuthServices with ListenableServiceMixin {
   }
 
   unfollowUser(String email, List followers, String id) async {
+    log("User id: ${id}");
     if (client == null) {
       showToast("Appwrite Client Initialization Failed");
       return null;
@@ -512,6 +517,7 @@ class AuthServices with ListenableServiceMixin {
               "email": userBox.getAt(0)?.email,
               "photoUrl": userBox.getAt(0)?.photoUrl,
               "followers": followers,
+              "guest": userBox.getAt(0)?.guest,
               "bio": userBox.getAt(0)?.bio,
               "shares": userBox.getAt(0)?.shares,
               "createdAt": userBox.getAt(0)?.createdAt,

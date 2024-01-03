@@ -62,10 +62,14 @@ class FollowersScreen extends StatelessWidget {
                         )
                       : ListTile(
                           leading: CircleAvatar(
-                            backgroundImage: NetworkImage(""),
+                            backgroundImage: NetworkImage(
+                                "https://cdn1.iconfinder.com/data/icons/instagram-ui-colored/48/JD-17-512.png"),
                           ),
                           title: Text(""),
-                          subtitle: Text(""),
+                          subtitle: Text(
+                            viewModel.followersList[index].toString(),
+                            style: GoogleFonts.labrada(color: Colors.white),
+                          ),
                           trailing: Text(""),
                         );
                 },

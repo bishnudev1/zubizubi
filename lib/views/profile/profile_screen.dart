@@ -161,11 +161,11 @@ class ProfileScreen extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           // Beamer.of(context).beamToNamed('/followers');
-                          // viewModel.goToFollowersScreen();
+                          viewModel.goToFollowersScreen();
                           // _beamerDelegate!.beamToNamed('/followers');
                         },
                         child: Text(
-                          "Followers: ${viewModel.user?.followers.length ?? 0}",
+                          "Following: ${viewModel.user?.followers.length ?? 0}",
                           style: GoogleFonts.lato(fontSize: 16, color: Colors.white),
                         ),
                       ),
