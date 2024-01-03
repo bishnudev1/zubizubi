@@ -91,6 +91,7 @@ class AppwriteServices with ListenableServiceMixin {
       log("Appwrite client got null");
       null;
     }
+    log("addNewVideo: ${file.path}");
     final storage = Storage(_client!);
     final databases = Databases(_client!);
     try {

@@ -34,28 +34,25 @@ class RoomScreen extends StatelessWidget {
         } else if (viewModel.hasError) {
           return Scaffold(
             body: Center(
-              child: Text(viewModel.error.toString(),
-                  style: TextStyle(color: Colors.white)),
+              child: Text(viewModel.error.toString(), style: const TextStyle(color: Colors.white)),
             ),
           );
         }
         return Scaffold(
-          appBar: PreferredSize(
-              preferredSize: Size.fromHeight(50), child: CustomAppBar()),
+          appBar: const PreferredSize(preferredSize: Size.fromHeight(50), child: CustomAppBar()),
           body: SafeArea(
               child: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             alignment: Alignment.center,
             // padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(Images.appBg), fit: BoxFit.cover)),
+            decoration: const BoxDecoration(
+                image: DecorationImage(image: AssetImage(Images.appBg), fit: BoxFit.cover)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Row(
@@ -68,33 +65,31 @@ class RoomScreen extends StatelessWidget {
                       children: [
                         IconButton(
                             onPressed: () {
-                              routerDelegate.popToNamed('/chats');
+                              routerDelegate.popToNamed('/shell');
                             },
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.arrow_back_ios,
                               color: Colors.white,
                             )),
-                        SizedBox(
+                        const SizedBox(
                           width: 5,
                         ),
                         Text(
                           "${receiver["receiver"].userName}",
                           style: GoogleFonts.inter(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
+                              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
                     IconButton(
                         onPressed: () {},
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.more_vert,
                           color: Colors.white,
                         )),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Expanded(
@@ -113,33 +108,24 @@ class RoomScreen extends StatelessWidget {
                           itemBuilder: (context, index) {
                             log("chatRooms: ${viewModel.chatRooms.length}");
                             return Container(
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 10),
+                              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  viewModel.roomMessages[index].sender ==
-                                          viewModel.user!.name
+                                  viewModel.roomMessages[index].sender == viewModel.user!.name
                                       ? Expanded(
                                           child: Container(
                                             alignment: Alignment.centerRight,
                                             child: Container(
                                               padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 10,
-                                                      horizontal: 10),
+                                                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                               decoration: BoxDecoration(
                                                   color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20)),
+                                                  borderRadius: BorderRadius.circular(20)),
                                               child: Text(
-                                                viewModel.roomMessages[index]
-                                                    .message,
-                                                style: GoogleFonts.inter(
-                                                    color: Colors.black,
-                                                    fontSize: 14),
+                                                viewModel.roomMessages[index].message,
+                                                style: GoogleFonts.inter(color: Colors.black, fontSize: 14),
                                               ),
                                             ),
                                           ),
@@ -149,20 +135,13 @@ class RoomScreen extends StatelessWidget {
                                             alignment: Alignment.centerLeft,
                                             child: Container(
                                               padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 10,
-                                                      horizontal: 10),
+                                                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                               decoration: BoxDecoration(
                                                   color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20)),
+                                                  borderRadius: BorderRadius.circular(20)),
                                               child: Text(
-                                                viewModel.roomMessages[index]
-                                                    .message,
-                                                style: GoogleFonts.inter(
-                                                    color: Colors.black,
-                                                    fontSize: 14),
+                                                viewModel.roomMessages[index].message,
+                                                style: GoogleFonts.inter(color: Colors.black, fontSize: 14),
                                               ),
                                             ),
                                           ),
@@ -173,7 +152,7 @@ class RoomScreen extends StatelessWidget {
                           },
                         ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Padding(
@@ -186,31 +165,28 @@ class RoomScreen extends StatelessWidget {
                         child: Container(
                           // width: MediaQuery.of(context).size.width * 0.7,
                           height: 40,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20)),
+                          decoration:
+                              BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: TextField(
                               decoration: InputDecoration(
                                   hintText: "Type a message",
-                                  hintStyle: GoogleFonts.inter(
-                                      color: Colors.grey, fontSize: 14),
+                                  hintStyle: GoogleFonts.inter(color: Colors.grey, fontSize: 14),
                                   border: InputBorder.none),
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       Container(
                         width: 40,
                         height: 40,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Icon(
+                        decoration:
+                            BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                        child: const Icon(
                           Icons.send,
                           color: Colors.black,
                         ),
@@ -221,7 +197,6 @@ class RoomScreen extends StatelessWidget {
               ],
             ),
           )),
-          bottomNavigationBar: ShellBottomNavigationBar(),
         );
       },
     );

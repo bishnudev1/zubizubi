@@ -19,7 +19,7 @@ class ChatsScreen extends StatelessWidget {
       viewModelBuilder: () => ChatsViewModel(),
       onViewModelReady: (viewModel) {
         log("viewModel.chatRooms.isEmpty: ${viewModel.chatRooms.isEmpty}");
-                WidgetsBinding.instance.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           viewModel.getUser();
         });
       },
@@ -34,34 +34,31 @@ class ChatsScreen extends StatelessWidget {
         } else if (viewModel.hasError) {
           return Scaffold(
             body: Center(
-              child: Text(viewModel.error.toString(),
-                  style: TextStyle(color: Colors.white)),
+              child: Text(viewModel.error.toString(), style: const TextStyle(color: Colors.white)),
             ),
           );
         }
         return Scaffold(
-          appBar: PreferredSize(
-              preferredSize: Size.fromHeight(50), child: CustomAppBar()),
+          appBar: const PreferredSize(preferredSize: Size.fromHeight(50), child: CustomAppBar()),
           body: SafeArea(
             child: Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               alignment: Alignment.center,
               // padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(Images.appBg), fit: BoxFit.cover)),
+              decoration: const BoxDecoration(
+                  image: DecorationImage(image: AssetImage(Images.appBg), fit: BoxFit.cover)),
               child: viewModel.chatRooms.isEmpty
                   ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          FaIcon(
+                          const FaIcon(
                             FontAwesomeIcons.solidCommentDots,
                             color: Colors.white,
                             size: 50,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Text(
@@ -79,21 +76,17 @@ class ChatsScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         log("chatRooms: ${viewModel.chatRooms.length}");
                         return Container(
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
+                          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                           decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(10)),
+                              color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(10)),
                           child: ListTile(
                             onTap: () {
-                              routerDelegate.beamToNamed("/room", data: {
-                                "receiver": viewModel.chatRooms[index]
-                              });
+                              routerDelegate
+                                  .beamToNamed("/room", data: {"receiver": viewModel.chatRooms[index]});
                             },
                             leading: CircleAvatar(
                               radius: 30,
-                              backgroundImage: NetworkImage(
-                                  viewModel.chatRooms[index].userImage),
+                              backgroundImage: NetworkImage(viewModel.chatRooms[index].userImage),
                             ),
                             title: Text(
                               viewModel.chatRooms[index].userName,
@@ -122,7 +115,6 @@ class ChatsScreen extends StatelessWidget {
                     ),
             ),
           ),
-          bottomNavigationBar: ShellBottomNavigationBar(),
         );
       },
     );

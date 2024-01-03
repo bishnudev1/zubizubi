@@ -29,6 +29,7 @@ class ShellScreen extends StatelessWidget {
         SearchLocation(),
         FollowersLocation(),
         LoginLocation(),
+        ChatsLocation(),
       ],
     ),
   );

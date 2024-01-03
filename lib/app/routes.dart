@@ -2,8 +2,6 @@ import 'dart:developer';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:zubizubi/app/app.locator.dart';
-import 'package:zubizubi/data/models/chat.dart';
-import 'package:zubizubi/data/models/user.dart';
 import 'package:zubizubi/services/auth_services.dart';
 import 'package:zubizubi/utils/toast.dart';
 import 'package:zubizubi/views/chats/chats_screen.dart';
@@ -43,6 +41,14 @@ final routerDelegate = BeamerDelegate(
       //   '/followers': (context, state, data) => const FollowersScreen(),
       //   '/profile': (context, state, data) => const ProfileScreen(),
       //   '/search': (context, state, data) => const SearchScreen(),
+      '/room': (context, state, data) {
+        return BeamPage(
+          key: const ValueKey('room'),
+          popToNamed: '/shell',
+          type: BeamPageType.scaleTransition,
+          child: RoomScreen(key: UniqueKey(), receiver: data as Map<String, dynamic>),
+        );
+      },
       '/share': (context, state, data) {
         log("state.uri: ${state.uri}");
         // Use BeamPage to define custom behavior
@@ -141,6 +147,25 @@ class FollowersLocation extends BeamLocation<BeamState> {
           key: ValueKey('followers'),
           name: 'followers',
           child: FollowersScreen(),
+        ),
+      ];
+}
+
+// ChatsLocation
+class ChatsLocation extends BeamLocation<BeamState> {
+  ChatsLocation() : super();
+
+  @override
+  List<Pattern> get pathPatterns => [
+        '/chats',
+      ];
+
+  @override
+  List<BeamPage> buildPages(BuildContext context, BeamState state) => [
+        const BeamPage(
+          key: ValueKey('chats'),
+          name: 'chats',
+          child: ChatsScreen(),
         ),
       ];
 }
