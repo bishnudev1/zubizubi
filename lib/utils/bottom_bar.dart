@@ -17,8 +17,7 @@ class ShellBottomNavigationBar extends StatefulWidget {
   // final GlobalKey<BeamerState> beamerKey;
 
   @override
-  State<ShellBottomNavigationBar> createState() =>
-      _ShellBottomNavigationBarState();
+  State<ShellBottomNavigationBar> createState() => _ShellBottomNavigationBarState();
 }
 
 class _ShellBottomNavigationBarState extends State<ShellBottomNavigationBar> {

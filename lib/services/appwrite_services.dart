@@ -24,7 +24,6 @@ class CachedData {
 
 class AppwriteServices with ListenableServiceMixin {
   Client? _client;
-  String? lastId;
 
   CachedData? cachedData;
 
@@ -42,14 +41,16 @@ class AppwriteServices with ListenableServiceMixin {
     }
   }
 
-  Future<List<Document>> getVideos() async {
+  Future<List<Document>> getVideos({required String? offsetId}) async {
     try {
       log("Appwrite cachedData $cachedData ${cachedData?.timeAdded} ${cachedData?.videoList}");
       var timeNow = DateTime.now();
       if (cachedData?.videoList != null &&
           cachedData?.timeAdded != null &&
-          timeNow.difference(cachedData!.timeAdded!).inMinutes < 2 &&
-          cachedData!.videoList!.isNotEmpty) {
+          cachedData!.videoList!.isNotEmpty &&
+          cachedData!.videoList!.last.$id != offsetId &&
+          timeNow.difference(cachedData!.timeAdded!).inMinutes < 2) {
+        log("sending cached data");
         return cachedData!.videoList!;
       }
 
@@ -62,9 +63,9 @@ class AppwriteServices with ListenableServiceMixin {
         databaseId: '658ebf7877a5df4a9f60',
         collectionId: '658ebf9654ca69759383',
         queries: [
-          Query.limit(1000),
+          Query.limit(500),
           Query.orderDesc("created"),
-          if (lastId != null) Query.cursorAfter(lastId!),
+          if (offsetId != null) Query.cursorAfter(offsetId),
         ],
       );
 
@@ -73,12 +74,6 @@ class AppwriteServices with ListenableServiceMixin {
       final data = documents.documents;
 
       log("Appwrite video data length: ${data.length}");
-
-      if (data.isNotEmpty) {
-        lastId = data.last.$id;
-      } else {
-        lastId = null;
-      }
 
       data.shuffle();
 
