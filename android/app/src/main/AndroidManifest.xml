@@ -4,9 +4,10 @@
     </queries>
  <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="zubizubi"
+        android:label="Zubi Zubi"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/launcher_icon"
+        android:allowBackup="false">
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -11,18 +11,18 @@ import 'package:zubizubi/views/splash/splash_screen.dart';
 
 final GlobalKey navigatorKey = GlobalKey();
 
-BeamGuard authGuard = BeamGuard(
-  pathPatterns: ["/profile", "/search", "/followers"],
-  check: ((context, location) {
-    showToast("You need to be logged In to that!");
-    return false;
-  }),
-  replaceCurrentStack: false,
-  beamToNamed: (origin, target) => "/login",
-);
+// BeamGuard authGuard = BeamGuard(
+//   pathPatterns: ["/profile", "/search", "/followers"],
+//   check: ((context, location) {
+//     showToast("You need to be logged In to that!");
+//     return false;
+//   }),
+//   replaceCurrentStack: false,
+//   beamToNamed: (origin, target) => "/login",
+// );
 
 final routerDelegate = BeamerDelegate(
-  guards: [authGuard],
+  // guards: [authGuard],
   locationBuilder: RoutesLocationBuilder(
     routes: {
       '/': (context, state, data) => const SplashScreen(),
