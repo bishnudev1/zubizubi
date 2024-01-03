@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:stacked/stacked.dart';
 import 'package:zubizubi/views/login/login_viewmodel.dart';
 
+import '../../app/routes.dart';
 import '../../themes/images.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -22,9 +23,8 @@ class LoginScreen extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(Images.appBg), fit: BoxFit.cover)),
+              decoration: const BoxDecoration(
+                  image: DecorationImage(image: AssetImage(Images.appBg), fit: BoxFit.cover)),
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -44,23 +44,19 @@ class LoginScreen extends StatelessWidget {
                             viewModel.loginWithGoogle(context);
                           },
                           child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 12.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
                             child: Container(
                               height: 50,
                               width: 250,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                      width: 1, color: Colors.blueGrey)),
+                                  border: Border.all(width: 1, color: Colors.blueGrey)),
                               child: Center(
                                 child: viewModel.isLoading
                                     ? const CircularProgressIndicator()
                                     : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Text(
                                             "Login with",
@@ -70,7 +66,7 @@ class LoginScreen extends StatelessWidget {
                                               color: Colors.white,
                                             ),
                                           ),
-                                          FaIcon(
+                                          const FaIcon(
                                             FontAwesomeIcons.google,
                                             color: Colors.white,
                                           )
@@ -91,23 +87,19 @@ class LoginScreen extends StatelessWidget {
                             viewModel.loginWithFacebook();
                           },
                           child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 12.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
                             child: Container(
                               height: 50,
                               width: 250,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                      width: 1, color: Colors.blueGrey)),
+                                  border: Border.all(width: 1, color: Colors.blueGrey)),
                               child: Center(
                                 child: viewModel.isLoading
                                     ? const CircularProgressIndicator()
                                     : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Text(
                                             "Login with",
@@ -117,7 +109,7 @@ class LoginScreen extends StatelessWidget {
                                               color: Colors.white,
                                             ),
                                           ),
-                                          FaIcon(
+                                          const FaIcon(
                                             FontAwesomeIcons.facebook,
                                             color: Colors.white,
                                           )
@@ -127,7 +119,7 @@ class LoginScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 40,
                         ),
                         GestureDetector(

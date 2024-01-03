@@ -37,96 +37,110 @@ final routerDelegate = BeamerDelegate(
   locationBuilder: RoutesLocationBuilder(
     routes: {
       '/': (context, state, data) => const SplashScreen(),
-      // '/shell': (context, state, data) => ShellScreen(),
-      '/home': (context, state, data) => const HomeScreen(),
+      '/shell': (context, state, data) => ShellScreen(),
+      //   '/home': (context, state, data) => const HomeScreen(),
       '/login': (context, state, data) => const LoginScreen(),
-      '/followers': (context, state, data) => const FollowersScreen(),
-      '/profile': (context, state, data) => const ProfileScreen(),
-      '/search': (context, state, data) => const SearchScreen(),
-      '/chats': (context, state, data) => const ChatsScreen(),
-      '/room': (context, state, data) =>
-          RoomScreen(receiver: data as Map<String, dynamic>),
+      //   '/followers': (context, state, data) => const FollowersScreen(),
+      //   '/profile': (context, state, data) => const ProfileScreen(),
+      //   '/search': (context, state, data) => const SearchScreen(),
       '/share': (context, state, data) {
         log("state.uri: ${state.uri}");
         // Use BeamPage to define custom behavior
         return BeamPage(
           key: const ValueKey('share'),
-          popToNamed: '/home',
+          popToNamed: '/shell',
           type: BeamPageType.scaleTransition,
-          child: HomeScreen(
-              key: UniqueKey(), shareUrl: state.uri.queryParameters['url']),
+          child: HomeScreen(key: UniqueKey(), shareUrl: state.uri.queryParameters['url']),
         );
       }
     },
   ),
 );
 
-// // ProfileLocation
-// class ProfileLocation extends BeamLocation<BeamState> {
-//   ProfileLocation() : super();
+class LoginLocation extends BeamLocation<BeamState> {
+  LoginLocation() : super();
 
-//   @override
-//   List<Pattern> get pathPatterns => ['/profile'];
+  @override
+  List<Pattern> get pathPatterns => ['/login'];
 
-//   @override
-//   List<BeamPage> buildPages(BuildContext context, BeamState state) => [
-//         const BeamPage(
-//           key: ValueKey('profile'),
-//           child: ProfileScreen(),
-//         ),
-//       ];
-// }
+  @override
+  List<BeamPage> buildPages(BuildContext context, BeamState state) => [
+        const BeamPage(
+          key: ValueKey('login'),
+          name: 'login',
+          popToNamed: '/shell',
+          child: LoginScreen(),
+        ),
+      ];
+}
 
-// // SearchLocation
-// class SearchLocation extends BeamLocation<BeamState> {
-//   SearchLocation() : super();
+// ProfileLocation
+class ProfileLocation extends BeamLocation<BeamState> {
+  ProfileLocation() : super();
 
-//   @override
-//   List<BeamPage> buildPages(BuildContext context, BeamState state) => [
-//         const BeamPage(
-//           key: ValueKey('search'),
-//           child: SearchScreen(),
-//         ),
-//       ];
+  @override
+  List<Pattern> get pathPatterns => ['/profile'];
 
-//   @override
-//   List<Pattern> get pathPatterns => [
-//         '/search',
-//       ];
-// }
+  @override
+  List<BeamPage> buildPages(BuildContext context, BeamState state) => [
+        const BeamPage(
+          key: ValueKey('profile'),
+          child: ProfileScreen(),
+        ),
+      ];
+}
 
-// // HomeLocation
-// class HomeLocation extends BeamLocation<BeamState> {
-//   HomeLocation() : super();
+// SearchLocation
+class SearchLocation extends BeamLocation<BeamState> {
+  SearchLocation() : super();
 
-//   @override
-//   List<Pattern> get pathPatterns => [
-//         '/home',
-//       ];
+  @override
+  List<BeamPage> buildPages(BuildContext context, BeamState state) => [
+        const BeamPage(
+          key: ValueKey('search'),
+          child: SearchScreen(),
+        ),
+      ];
 
-//   @override
-//   List<BeamPage> buildPages(BuildContext context, BeamState state) => [
-//         const BeamPage(
-//           key: ValueKey('home'),
-//           child: HomeScreen(),
-//         ),
-//       ];
-// }
+  @override
+  List<Pattern> get pathPatterns => [
+        '/search',
+      ];
+}
 
-// // FollowersLocation
-// class FollowersLocation extends BeamLocation<BeamState> {
-//   FollowersLocation() : super();
+// HomeLocation
+class HomeLocation extends BeamLocation<BeamState> {
+  HomeLocation() : super();
 
-//   @override
-//   List<Pattern> get pathPatterns => [
-//         '/followers',
-//       ];
+  @override
+  List<Pattern> get pathPatterns => [
+        '/home',
+      ];
 
-//   @override
-//   List<BeamPage> buildPages(BuildContext context, BeamState state) => [
-//         const BeamPage(
-//           key: ValueKey('followers'),
-//           child: FollowersScreen(),
-//         ),
-//       ];
-// }
+  @override
+  List<BeamPage> buildPages(BuildContext context, BeamState state) => [
+        const BeamPage(
+          key: ValueKey('home'),
+          child: HomeScreen(),
+        ),
+      ];
+}
+
+// FollowersLocation
+class FollowersLocation extends BeamLocation<BeamState> {
+  FollowersLocation() : super();
+
+  @override
+  List<Pattern> get pathPatterns => [
+        '/followers',
+      ];
+
+  @override
+  List<BeamPage> buildPages(BuildContext context, BeamState state) => [
+        const BeamPage(
+          key: ValueKey('followers'),
+          name: 'followers',
+          child: FollowersScreen(),
+        ),
+      ];
+}

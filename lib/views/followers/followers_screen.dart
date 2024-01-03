@@ -36,17 +36,15 @@ class FollowersScreen extends StatelessWidget {
           );
         }
         return Scaffold(
-          appBar: PreferredSize(
-              preferredSize: Size.fromHeight(50), child: CustomAppBar()),
+          appBar: PreferredSize(preferredSize: Size.fromHeight(50), child: CustomAppBar()),
           body: SafeArea(
             child: Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               alignment: Alignment.center,
               // padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(Images.appBg), fit: BoxFit.cover)),
+              decoration:
+                  BoxDecoration(image: DecorationImage(image: AssetImage(Images.appBg), fit: BoxFit.cover)),
               child: ListView.builder(
                 itemCount: viewModel.followersList.length,
                 itemBuilder: (context, index) {
@@ -76,7 +74,7 @@ class FollowersScreen extends StatelessWidget {
               ),
             ),
           ),
-          bottomNavigationBar: const ShellBottomNavigationBar(),
+          //   bottomNavigationBar: const ShellBottomNavigationBar(),
         );
       },
     );

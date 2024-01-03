@@ -37,8 +37,8 @@ class VideoServices with ListenableServiceMixin {
     }
   }
 
-  fetchVideosInBatches() async {
-    List<Document> videoSnapshot = await _appwriteServices.getVideos();
+  fetchVideosInBatches({required String? offsetId}) async {
+    List<Document> videoSnapshot = await _appwriteServices.getVideos(offsetId: offsetId);
 
     // log("videosSnapshot length @videoServices: ${videoSnapshot.length}");
 
@@ -94,19 +94,16 @@ class VideoServices with ListenableServiceMixin {
     }
   }
 
-  videoComment(BuildContext context, List comments, String id,
-      UserModel.User user, String comment) async {
+  videoComment(BuildContext context, List comments, String id, UserModel.User user, String comment) async {
     try {
-      await _appwriteServices.addNewComment(
-          context, comments, id, user, comment);
+      await _appwriteServices.addNewComment(context, comments, id, user, comment);
       notifyListeners();
     } catch (e) {
       log("Error: $e");
     }
   }
 
-  deleteMyComment(
-      BuildContext context, List comments, String id, dynamic comment) async {
+  deleteMyComment(BuildContext context, List comments, String id, dynamic comment) async {
     try {
       await _appwriteServices.deleteComment(context, comments, id, comment);
       notifyListeners();

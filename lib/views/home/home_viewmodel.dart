@@ -124,9 +124,7 @@ class HomeViewModel extends BaseViewModel {
     prevVideo = index;
 
     // fetch next batch of videos
-    if (videoList.length - 2 >= 0 &&
-        index >= videoList.length - 2 &&
-        !loading) {
+    if (videoList.length - 2 >= 0 && index >= videoList.length - 2 && !loading) {
       loadFetchNextBatchOfVideos();
     }
 
@@ -140,7 +138,8 @@ class HomeViewModel extends BaseViewModel {
     loading = true;
     notifyListeners();
 
-    var newVideos = await _videoServices.fetchVideosInBatches();
+    var newVideos =
+        await _videoServices.fetchVideosInBatches(offsetId: videoList.isNotEmpty ? videoList.last.id : null);
     if (newVideos.length > 0) {
       log("All Videos: $newVideos");
       final allNewVideos = newVideos
@@ -208,8 +207,7 @@ class HomeViewModel extends BaseViewModel {
       // videoBox.get(documentId)?.likes.add(_user!.toMap().toString());
       // videoList[currentIndex].likes.add(_user!.toMap().toString());
       // notifyListeners();
-      await _videoServices.addLike(
-          documentId, _user!.email, videoList[index].likes);
+      await _videoServices.addLike(documentId, _user!.email, videoList[index].likes);
       notifyListeners();
     } catch (e) {
       log("Error: $e");
@@ -220,8 +218,7 @@ class HomeViewModel extends BaseViewModel {
     log("removeLike called with $documentId");
     log("${_user!.toMap()}");
     try {
-      await _videoServices.removeLike(
-          documentId, _user!.email, videoList[index].likes);
+      await _videoServices.removeLike(documentId, _user!.email, videoList[index].likes);
       notifyListeners();
     } catch (e) {
       log("Error: $e");
@@ -241,8 +238,8 @@ class HomeViewModel extends BaseViewModel {
   addComment(BuildContext context, List comment, String index) async {
     log("addComment called with $comment");
     try {
-      await _videoServices.videoComment(context, comment, index, _user!,
-          commentController.text.trim().toString());
+      await _videoServices.videoComment(
+          context, comment, index, _user!, commentController.text.trim().toString());
       notifyListeners();
       commentController.clear();
       notifyListeners();
@@ -251,8 +248,7 @@ class HomeViewModel extends BaseViewModel {
     }
   }
 
-  deleteComment(BuildContext context, List comment, String id,
-      dynamic commentData) async {
+  deleteComment(BuildContext context, List comment, String id, dynamic commentData) async {
     log("deleteComment called with $comment");
     try {
       await _videoServices.deleteMyComment(context, comment, id, commentData);

@@ -18,18 +18,17 @@ class SplashViewModel extends ReactiveViewModel {
     if (!routerDelegate.beamingHistory.first.history.first.routeInformation.uri
         .toString()
         .startsWith("/share")) {
-      
-      if(routerDelegate.currentBeamLocation.state.routeInformation.uri.toString().startsWith("/share")){
+      if (routerDelegate.currentBeamLocation.state.routeInformation.uri.toString().startsWith("/share")) {
         log("Current Beam Location: ${routerDelegate.currentBeamLocation.state.routeInformation.uri}");
         return;
       }
 
       Future.delayed(const Duration(seconds: 3), () {
         // router.go(Routes.homeScreen.path);
-        log("SPlash Screen Current User: $currentUser");
+        log("Splash Screen Current User: $currentUser");
 
         log("Current User: $currentUser");
-        Beamer.of(context).beamToNamed('/home');
+        routerDelegate.beamToNamed('/shell');
 
         // if (currentUser == null) {
         //   Beamer.of(context).beamToNamed('/login');
