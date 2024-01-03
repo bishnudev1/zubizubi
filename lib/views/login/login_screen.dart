@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:stacked/stacked.dart';
 import 'package:zubizubi/views/login/login_viewmodel.dart';
 
@@ -50,8 +51,8 @@ class LoginScreen extends StatelessWidget {
                               width: 250,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
-                                  border:
-                                      Border.all(width: 1, color: Colors.blueGrey)),
+                                  border: Border.all(
+                                      width: 1, color: Colors.blueGrey)),
                               child: Center(
                                 child: viewModel.isLoading
                                     ? const CircularProgressIndicator()
@@ -63,11 +64,11 @@ class LoginScreen extends StatelessWidget {
                                         children: [
                                           Text(
                                             "Login with",
-                                            style: TextStyle(
-                                                fontFamily: "Canela",
-                                                fontSize: 20,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w600),
+                                            style: GoogleFonts.inter(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
                                           ),
                                           FaIcon(
                                             FontAwesomeIcons.google,
@@ -97,8 +98,8 @@ class LoginScreen extends StatelessWidget {
                               width: 250,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
-                                  border:
-                                      Border.all(width: 1, color: Colors.blueGrey)),
+                                  border: Border.all(
+                                      width: 1, color: Colors.blueGrey)),
                               child: Center(
                                 child: viewModel.isLoading
                                     ? const CircularProgressIndicator()
@@ -110,11 +111,11 @@ class LoginScreen extends StatelessWidget {
                                         children: [
                                           Text(
                                             "Login with",
-                                            style: TextStyle(
-                                                fontFamily: "Canela",
-                                                fontSize: 20,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w600),
+                                            style: GoogleFonts.inter(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
                                           ),
                                           FaIcon(
                                             FontAwesomeIcons.facebook,
@@ -126,6 +127,25 @@ class LoginScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+                        SizedBox(
+                          height: 40,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            viewModel.continueAsGuest();
+                          },
+                          child: Center(
+                            child: viewModel.isLoading
+                                ? const CircularProgressIndicator()
+                                : Text(
+                                    "Continue as Guest",
+                                    style: GoogleFonts.adamina(
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                          ),
+                        )
                       ],
                     )
                   ],

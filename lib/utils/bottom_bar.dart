@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:zubizubi/app/routes.dart';
+import 'package:zubizubi/services/auth_services.dart';
 import 'package:zubizubi/services/video_services.dart';
+import 'package:zubizubi/utils/toast.dart';
 import '../app/app.locator.dart';
 
 class ShellBottomNavigationBar extends StatefulWidget {
@@ -15,7 +17,8 @@ class ShellBottomNavigationBar extends StatefulWidget {
   // final GlobalKey<BeamerState> beamerKey;
 
   @override
-  State<ShellBottomNavigationBar> createState() => _ShellBottomNavigationBarState();
+  State<ShellBottomNavigationBar> createState() =>
+      _ShellBottomNavigationBarState();
 }
 
 class _ShellBottomNavigationBarState extends State<ShellBottomNavigationBar> {
@@ -30,6 +33,8 @@ class _ShellBottomNavigationBarState extends State<ShellBottomNavigationBar> {
   //   _beamerDelegate = widget.beamerKey.currentState!.routerDelegate;
   //   _beamerDelegate.addListener(_setStateListener);
   // }
+
+  final _authServices = locator<AuthServices>();
 
   uploadVideo() async {
     final videoPicker = ImagePicker();
@@ -68,7 +73,13 @@ class _ShellBottomNavigationBarState extends State<ShellBottomNavigationBar> {
             break;
           case 2:
             log(index.toString());
-            uploadVideo();
+            if (_authServices.isSignedIn()) {
+              uploadVideo();
+            } else {
+              showToast("You need to be logged In to do that!");
+              routerDelegate.beamToNamed('/login');
+              return;
+            }
             break;
           case 3:
             log(index.toString());

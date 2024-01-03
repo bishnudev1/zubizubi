@@ -232,6 +232,7 @@ Widget videoCard(
               onPressed: () async {
                 if (viewmodel.user!.guest) {
                   showToast("Please login to comment");
+                  routerDelegate.beamToNamed("/login");
                   return;
                 }
                 if (isLiked) {
@@ -482,6 +483,7 @@ showCommentSection(BuildContext context, HomeViewModel model, Video video) {
                             onPressed: () {
                               if (model.user!.guest) {
                                 showToast("Please login to comment");
+                                routerDelegate.beamToNamed("/login");
                                 return;
                               }
                               if (model.formKey.currentState!.validate()) {

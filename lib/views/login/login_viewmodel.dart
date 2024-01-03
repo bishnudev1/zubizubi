@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:zubizubi/app/app.locator.dart';
+import 'package:zubizubi/app/routes.dart';
 import 'package:zubizubi/services/auth_services.dart';
 
 class LoginViewModel extends ReactiveViewModel {
@@ -23,4 +24,9 @@ class LoginViewModel extends ReactiveViewModel {
     isLoading = false;
     notifyListeners();
   }
+
+  continueAsGuest(){
+    routerDelegate.beamToNamed('/home');
+  }
+
 }

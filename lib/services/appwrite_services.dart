@@ -142,7 +142,7 @@ class AppwriteServices with ListenableServiceMixin {
 
       notifyListeners();
       showToast("Video Uploaded Successfully");
-      routerDelegate.beamToNamed('/shell');
+      routerDelegate.beamToNamed('/home');
     } on PlatformException catch (e) {
       showToast(e.message.toString());
       log('PlatformException: $e');
